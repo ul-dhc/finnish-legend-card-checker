@@ -162,10 +162,10 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 .reset-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-size:10px;padding:4px 9px;border-radius:5px;cursor:pointer;font-family:var(--mono);white-space:nowrap;}
 .reset-btn:hover{background:rgba(255,255,255,.14);}
 .reviewer-wrap{display:flex;align-items:center;gap:6px;flex:none;}
-.reviewer-label{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--mono);white-space:nowrap;}
-.reviewer-input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:4px 8px;border-radius:5px;font-family:var(--mono);width:130px;outline:none;}
-.reviewer-input::placeholder{color:rgba(255,255,255,.3);}
-.reviewer-input:focus{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.12);}
+.reviewer-label{font-size:11px;color:var(--text-3);font-family:var(--mono);white-space:nowrap;}
+.reviewer-input{background:var(--surface-2);border:1px solid var(--border);color:var(--text-1);font-size:12px;padding:6px 10px;border-radius:7px;font-family:var(--sans);width:130px;outline:none;}
+.reviewer-input::placeholder{color:var(--text-3);}
+.reviewer-input:focus{border-color:var(--focus);}
 .save-indicator{font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.35);white-space:nowrap;min-width:60px;}
 </style>
 </head>
@@ -183,6 +183,10 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
     <input type="search" id="searchInput" placeholder="Search Finnish, English, places, sources…" autocomplete="off">
   </div>
   <div class="chip-row" id="chipRow"></div>
+  <div class="reviewer-wrap">
+    <span class="reviewer-label">Reviewer:</span>
+    <input class="reviewer-input" id="reviewerName" type="text" placeholder="your name" autocomplete="off">
+  </div>
   <div class="view-toggle">
     <button class="vbtn active" id="btnList" title="List view">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -240,10 +244,6 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 </div>
 
 <div class="progress-bar">
-  <div class="reviewer-wrap">
-    <span class="reviewer-label">Reviewer:</span>
-    <input class="reviewer-input" id="reviewerName" type="text" placeholder="your name" autocomplete="off">
-  </div>
   <span class="progress-lbl" id="progressLabel">0 / 15 reviewed</span>
   <div class="progress-track">
     <div class="fill-ok" id="fillChecked" style="width:0%"></div>
