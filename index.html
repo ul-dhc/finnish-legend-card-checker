@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finnish Folk Legend Index Card Checker</title>
+<title>SKS Finnish Folk Legend Index Card Checker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -530,7 +530,7 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
               '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + (s.flagged ? '&#9873; Flagged' : 'Flag issue') + '</button>' +
               '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + (s.note ? 'Edit note' : '+ add note') + '</button>' +
             '</div>' +
-            (r.reviewed_by || r.reviewed_at ? '<div class="reviewed-by">' +
+            (( r.status === 'checked' || r.status === 'flagged') && (r.reviewed_by || r.reviewed_at) ? '<div class="reviewed-by">' +
               (r.reviewed_by ? 'Reviewed by <b>' + escapeHtml(r.reviewed_by) + '</b>' : 'Reviewed') +
               (r.reviewed_at ? ' &middot; ' + formatDate(r.reviewed_at) : '') +
             '</div>' : '') +
