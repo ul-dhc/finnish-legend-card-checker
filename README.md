@@ -8,16 +8,16 @@ A browser-based tool for verifying transcriptions of Finnish folk legend index c
 
 Each index card in the collection has been photographed and transcribed into Finnish text, then translated into English. This tool displays all three side by side so a reviewer can check whether the transcription matches the original card.
 
-- Scanned card photo next to its Finnish transcription and English translation
-- Tap any photo to zoom to full size for close reading
-- Mark cards as **checked** (transcription is correct) or **flag** them (something looks off)
-- Add a free-text note per card explaining the issue
-- Search across Finnish text, English text, place names, and source codes
-- Filter by review status: All / Unreviewed / Checked / Flagged
-- Sort by card order or TK archive code
-- Switch between list view and grid view
-- Progress bar showing how many cards have been reviewed
-- **Review marks and notes are shared** — all changes are saved to Google Sheets in real time, so every reviewer sees the same up-to-date status
+- Scanned card photo next to its Finnish transcription and English translation. 
+- Tap any photo to zoom to full size for close reading. 
+- Mark cards as **checked** (transcription is correct) or **flag** them (something looks off). 
+- Add a free-text note per card explaining the issue. 
+- Search across Finnish text, English text, place names, and source codes. 
+- Filter by review status: All / Unreviewed / Checked / Flagged. 
+- Sort by card order or TK archive code. 
+- Switch between list view and grid view. 
+- Progress bar showing how many cards have been reviewed. 
+- **Review marks and notes are shared** — all changes are saved to Google Sheets in real time, so every reviewer sees the same up-to-date status. 
 
 ## How to use
 
