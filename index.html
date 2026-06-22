@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finnish Folk Legend Index Card Checker</title>
+<title>SKS Finnish Folk Legend Index Card Checker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -517,7 +517,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   document.getElementById('modalConfirm').addEventListener('click', function() {
     var name = document.getElementById('modalNameInput').value.trim();
     if (!name) return;
-    document.getElementById('reviewerName').value = name;
     localStorage.setItem('reviewer_name', name);
     closeModal();
     if (window._pendingAction) { window._pendingAction(); window._pendingAction = null; }
