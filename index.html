@@ -137,8 +137,8 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .card-text{padding:12px;min-width:0;}
 .field-label{font-size:10px;color:var(--focus);text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:4px;}
 .field-label.en{color:#5B5A86;}
-.field-fi{background:var(--surface-2);border:1px solid var(--border-soft);border-radius:6px;padding:9px 11px;font-size:13px;color:var(--text-1);line-height:1.55;margin-bottom:10px;white-space:pre-wrap;}
-.field-en{font-size:13px;color:var(--text-2);font-style:italic;line-height:1.55;margin-bottom:10px;white-space:pre-wrap;}
+.field-fi{background:var(--surface-2);border:1px solid var(--border-soft);border-radius:6px;padding:9px 11px;font-size:13px;color:var(--text-1);line-height:1.55;margin-bottom:10px;white-space:pre-line;}
+.field-en{font-size:13px;color:var(--text-2);font-style:italic;line-height:1.55;margin-bottom:10px;white-space:pre-line;}
 .meta-row{display:flex;gap:10px 16px;font-size:11px;color:var(--text-3);border-top:1px dashed var(--divider);padding-top:8px;flex-wrap:wrap;}
 .meta-row b{color:var(--text-2);font-weight:500;}
 .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;}
@@ -394,7 +394,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
       reviewed_at: new Date().toISOString()
     }));
 
-    // Use no-cors as fallback — Apps Script accepts plain text POST
     fetch(SHEETS_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -543,7 +542,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     updateProgress();
   }
 
-  // ── Reviewer modal ──────────────────────────────────────────────
   var pendingAction = null;
 
   function requireReviewer(callback) {
@@ -557,10 +555,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     }
   }
 
-  function closeModal() {
-    document.getElementById('reviewerModal').classList.add('hidden');
-  }
-
   document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       var n = document.getElementById('modalNameInput').value.trim();
@@ -571,7 +565,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     }
   });
 
-  // Card handlers
   function attachCardHandlers() {
     document.querySelectorAll(".action-btn").forEach(function(btn) {
       btn.addEventListener("click", function() {
@@ -704,7 +697,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   loadFromSheets();
 
 })();
-
 </script>
 </body>
 </html>
