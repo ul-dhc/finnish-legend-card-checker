@@ -221,6 +221,7 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
     <div class="result-row">
       <span id="resultCount">Showing 15 of 15</span>
     </div>
+    <div id="loadingMsg" style="display:none;padding:20px;font-size:13px;color:#3A4358;"></div>
     <div id="cardList"></div>
     <div class="no-results" id="noResults" style="display:none;">No cards match your search or filter.</div>
   </div>
@@ -242,111 +243,132 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 </div>
 
 <script>
-const RECORDS = [{"id": 1, "image": "IMG20260612101458.jpg", "fi": "Ylöjärvellä oli piru. Ihmiset läheltä ja kaukaa kävivät sitä katsomassa. Eivät he mitään olentoa nähneet. Mutta jossain torpassa (nimen olen unohtanut) se siellä tanssitti leipiä vartaissa ja aukoi ja sulki ovia sekä helisytti astioita. Sitten se asettui johonkin kallioon ja lauloi aika ajoin sitä virttä: ”Nyt vaivoista vaan kuulla saa. Kaikki itkein parkuin valittaa tuskaansa haikeinta.”", "en": "There was a devil in Ylöjärvi. People came from near and far to look at it. They did not see any being. But in some croft, whose name I have forgotten, it made loaves of bread dance on spits, opened and closed doors, and rattled dishes. Then it settled in some rock and from time to time sang the hymn: ‘Now one hears only of troubles. Everyone laments their keenest anguish with tears and wailing.’", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:14. 1961. Heikki Elomäki, pienvilj. 1870-1930", "code": "TK 10:14", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:14. 1961. Heikki Elomäki, pienvilj. 1870-1930."}, {"id": 2, "image": "IMG20260612101902.jpg", "fi": "Lapsuusajaltani muistan täältä kotikylästäni Tyrisevältä erään talon vanhan emännän joka itse uskoi ja ehkä joku naapurikin, että hän pystyy parantamaan konsteillaan. Hän osasi esim. käärmeenpuremaan lorun. Lapsille ei hän sitä opettanut. Taika kai olisi menettänyt mahtinsa, jos sitä olisi turhanpäin tehty.\n\nÄitini kädet puutuivat ja niitä särki. Kyseinen emäntä sanoi: ”Tu sinne meirän saunaan lauantaina! Minä katton sulle veden kiuluun.” Äiti meni, kun ei tahtonut pahoittaa muorin mieltä. Hän sanoi heittäneensä sen veden nurkkaan, kun ei uskonut, että veteen luetuilla loitsuilla oli voimaa.", "en": "From my childhood I remember, here in my home village of Tyrisevä, an old mistress of a house who herself believed, and perhaps some neighbor did too, that she could heal with her methods. For example, she knew a charm for snakebite. She did not teach it to children. The magic would probably have lost its power if it had been done in vain.\n\nMy mother’s hands went numb and ached. The mistress said: ‘Come to our sauna on Saturday! I’ll look at the water for you in the tub.’ Mother went because she did not want to hurt the old woman’s feelings. She said she threw the water into the corner, because she did not believe that charms read over water had any power.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:46. 1961", "code": "TK 10:46", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:46. 1961."}, {"id": 3, "image": "IMG20260612101843.jpg", "fi": "jatk. 1\n\nKottilan talon kaivosta vettä pulloonsa ja taikauskoisena heitti uhrirahan kaivoon. Hän kiiruhti juoksujalkaa kotiinsa Kylmäkoskelle eikä kertonut mistä oli vettä ottanut. Jännittynyt hän oli ”lääkkeen” vaikutuksesta. Mutta lasten suut paranivat. Kottilan kaivon vesi siis tepsi siinä kuin Linnaisten kalliolla olevan taikalähteen vesikin. Se hälvensi vaarini taikauskoa. Mutta vasta vanhana miehenä hän tämän oli rohjennut kertoa lapsilleen. (Tämä tapahtui ehkä 1830-1840)\n\nLinnaisten kallio on Sääksmäen Saarioispuolella lähellä Kuurilan asemaa.", "en": "cont. 1\n\n[He took] water in his bottle from the well of the Kottila house and, being superstitious, threw an offering coin into the well. He hurried home at a run to Kylmäkoski and did not tell where he had taken the water from. He was excited about the effect of the ‘medicine.’ But the children’s mouths healed. So the water from Kottila’s well worked just as well as the water of the magic spring on the Linnaisten rock. This dispelled my grandfather’s superstition. But only as an old man had he dared to tell this to his children. This happened perhaps in 1830–1840.\n\nThe Linnaisten rock is on the Saarioinen side of Sääksmäki near Kuurila station.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:44. 1961. Heikki Elomäki, pienvilj. s. 1870,k. 1930", "code": "TK 10:44", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:44. 1961. Heikki Elomäki, pienvilj. s.1870,k.1930."}, {"id": 4, "image": "IMG20260612101830.jpg", "fi": "Isäni, Heikki Elomäki, on jo kuollut (1930), mutta muistan tämän tosiperäisen hänen kertomansa kaskun.\n\nIsoisäni Karl Enbäck oli 9-vuotias poika ja asui Kylmäkoskella.\n\nSääksmäen Linnaisten kalliolla on lähde, jonka vedellä uskottiin olevan lasten ”sampaita” parantava voima. Vaarini oli lähetetty hakemaan pullolla vettä e.m:sta lähteestä taskussaan lähteeseen pudotettava ”uhriraha.” Päästyään Toijalaan poika tapasi raittilla Toijalan poikia ja rupesi heidän kanssaan lyömään kiekkoa. Vasta iltapäivällä hän muisti millä asialla hän oli. Mutta Linnaisiin on Toijalasta toistakymmentä kilometriä, ja jos poika olisi sinne vielä kävellyt, olisi tullut pimeä, jota 9-vuotias pelkäsi. Neuvokas poika otti keskellä Toijalan kylää olevan jatkuu", "en": "My father, Heikki Elomäki, has already died (1930), but I remember this true anecdote told by him.\n\nMy grandfather Karl Enbäck was a nine-year-old boy and lived in Kylmäkoski.\n\nOn the Linnaisten rock in Sääksmäki there is a spring whose water was believed to have the power to heal children’s ‘teeth.’ My grandfather had been sent to fetch water in a bottle from the above-mentioned spring, with an ‘offering coin’ in his pocket to be dropped into the spring. When he reached Toijala, the boy met boys from Toijala on the road and began playing disk with them. Only in the afternoon did he remember his errand. But Linnaisiin was more than ten kilometers from Toijala, and if the boy had still walked there, it would have grown dark, which a nine-year-old feared. The resourceful boy took [water] from the well in the middle of Toijala village. [continued]", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:44. 1961. Heikki Elomäki, pienvilj. s. 1870,k. 1930", "code": "TK 10:44", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:44. 1961. Heikki Elomäki, pienvilj. s.1870,k.1930."}, {"id": 5, "image": "IMG20260612101758.jpg", "fi": "Parittelun synnystä olen kuullut joskus seuraavan jutun:\n\nAatami ja Eeva asuivat vielä kaksistaan maailmaa. Eeva pesi viikunanlehtensä ja valitti, ettei tiedä, mihin panisi sen kuivumaan. Aatami sanoi, että mulla olisi sellainen tanko, johon se lehti sopisi kuivumaan, mutta mihin panisin sen toisen pään. No, Eeva huomasi: ”Mulla on reikä mihin se vapaa pää sopii.” Seisoivat siinä vastakkain pyykkitelineenä. Tuli tuulenpuuska. Aatami horjahti Eevaan päin. Eeva mielistyi: ”Painas vieläkin!” Näin ihminen oppi sen konstin.", "en": "I once heard the following story about the origin of mating:\n\nAdam and Eve still lived alone in the world. Eve washed her fig leaf and complained that she did not know where to put it to dry. Adam said that he had a rod on which the leaf would fit for drying, but where should he put the other end? Well, Eve noticed: ‘I have a hole where the free end fits.’ They stood there facing each other as a clothes rack. A gust of wind came. Adam lurched toward Eve. Eve liked it: ‘Press again!’ That is how people learned the trick.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:35. 1961", "code": "TK 10:35", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:35. 1961."}, {"id": 6, "image": "IMG20260612101441.jpg", "fi": "Tositapaus. Sääksmäen Annilasta varastettiin hevonen laitumelta. Isäntä meni tietäjiin kysymään, missä hevonen on. (Olen unohtanut tietäjän nimen, hän oli isäntä Pälkäneellä) Lähtiessään Annila sanoi: ”Jos mä nyt menen pilkan päiten.” (s.o. leikillään) Meni tietäjiin ja puhui asiansa. ”Pilkan päitenhän sinä tänne tulitkin”, sanoi tietäjä. ”Mutta jos ma ny sanon. Hevoses on lähellä Valkeakoskia päivät tallissa, yöt liakaköyressä mettän [illegible]oisioissa.” Tietäjä neuvo tiänkin niin tarkasti, että Annila osas sen neuvon mukaan hakee hevosensa yöllä kotio.", "en": "A true incident. A horse was stolen from pasture at Annila in Sääksmäki. The master went to a wise person to ask where the horse was. I have forgotten the wise person’s name; he was a farmer in Pälkäne. As Annila left, he said: ‘What if I am going just for fun.’ He went to the wise person and stated his matter. ‘It was just for fun that you came here,’ said the wise person. ‘But if I now say it: your horse is near Valkeakoski, by day in a stable, by night in muddy traces in the forest [illegible].’ The wise person also described the road so precisely that Annila was able, following his advice, to fetch his horse home at night.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:13. 1961. Tilda Seppälä o. s. Annila, emäntä k. 1957 yli 80 v. vanhana", "code": "TK 10:13", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:13. 1961. Tilda Seppälä o.s. Annila, emäntä k. 1957 yli 80 v. vanhana."}, {"id": 7, "image": "IMG20260612101412.jpg", "fi": "Emäntä kävi aina saunassa paran puheilla. Piika tuli uteliaaksi ja päätti ottaa selvän, mitä emäntä saunassa yksinään oikein touhusi. Hän meni saunaan illalla ja pisti itsensä lavon alle piiloon. Pian tuli emäntäkin eikä pimeässä saunassa nähnyt piikaa. Emäntä huusi kiukaan taka: ”Synny para, synny para! Ei o silmää näkemässä eikä korvaa kuulemassa.” Mutta ei para tullut, kun piika oli lavon alla. Kun emäntä ei saanut paraa näkyviin, hän ajatteli, että se on nyt jostain suuttunut. Hän meni pois. Silloin piika tuli lavon alta ja huusi: ”Synny para, synny para! Ei o silmää näkemässä eikä korvaa kuulemassa.” Silloin muurin takaa rupesi tulemaan niin kamala olento, että piika pelästyi ja lähti kiiruusti ovelle. Mennessään hän kuuli paran kysyvän: ”No, mitäs tahrot?” Piika ovesta livahtaessaan huusi hädissään: ”Paskaa!” Ja sitä tuli sauna täyteen.", "en": "The mistress always went to the sauna to speak with the para. The maid became curious and decided to find out what the mistress was doing alone in the sauna. She went to the sauna in the evening and hid under the platform. Soon the mistress came too and, in the dark sauna, did not see the maid. The mistress shouted from behind the stove: ‘Be born, para, be born, para! There is no eye seeing nor ear hearing.’ But the para did not come, because the maid was under the platform. When the mistress could not make the para appear, she thought it must now be angry about something. She went away. Then the maid came out from under the platform and shouted: ‘Be born, para, be born, para! There is no eye seeing nor ear hearing.’ Then from behind the masonry began to come such a terrible creature that the maid was frightened and hurried to the door. As she went, she heard the para ask: ‘Well, what do you want?’ Slipping out the door in panic, the maid shouted: ‘Shit!’ And the sauna became full of it.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:11. 1961. Amanda Elomäki, emäntä 1866-1959", "code": "TK 10:11", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:11. 1961. Amanda Elomäki, emäntä 1866-1959."}, {"id": 8, "image": "IMG20260612101159.jpg", "fi": "Vaikka kuinka pahan hevosen voi kengittää, kun kiertää oikealta vasemmalle kolme kertaa hevosen ympäri ja joka kerta lyö hevosen lautasille kädellään, jonka kämmen on ylöspäin käännetty, sekä joka lyönnillä sanoo\n\nHyvä piru, anna minulle suurempi voima, kuin tuolla järjettömällä luontokappaleella on.\n\nHevosen voimat vähenevät ja se tulee säisyksi, mutta että hevonen tulisi entiselleen, kierretään se jälleen kolmeen kertaan, vaan vasemmalta oikealle ja lyödään lautasille kädellä, jonka kämmen on alaspäin käännetty sekä sanotaan\n\nHyvä puru anna tuolle hevoselle voimansa takaisin”.", "en": "Even the worst horse can be shod if one circles the horse three times from right to left, and each time strikes the horse on the haunches with the palm turned upward, saying with each strike:\n\nGood devil, give me greater strength than that senseless creature has.\n\nThe horse’s strength diminishes and it becomes tame. But for the horse to become as it was before, one circles it again three times, but from left to right, and strikes it on the haunches with the palm turned downward, saying:\n\nGood devil, give that horse its strength back.", "place": "Sääksmäki", "source": "Aalto, K. K. b) 75. 1887", "code": "K.K. b) 75", "date": "1887", "informant": "", "meta": "Sääksmäki. Aalto, K.K. b) 75. 1887."}, {"id": 9, "image": "IMG20260612101522.jpg", "fi": "Mateuslahren Kreeta-Liisa oli kansanparantaja, mutta noita. Maaherrattaren käsi oli kipee. Lääkärit ei saanu paraneen. Hajettiin Mateuslahren KreetaLiisa. (muistaakseni Lempäälässä) Maaherra kysyi: ””Osaakkos noitua?” ”En”. Kreeta-Liisa keitti maan aineista troppinsa ja paransi maaherrattaren. (Samoin monia kansanihmisiä.)", "en": "Kreeta-Liisa of Mateuslahti was a folk healer, but also a witch. The governor’s wife had a sore hand. The doctors could not heal it. Kreeta-Liisa of Mateuslahti was fetched, as I recall from Lempäälä. The governor asked: ‘Can you bewitch?’ ‘No.’ Kreeta-Liisa brewed her medicine from substances of the earth and healed the governor’s wife. She did the same for many ordinary people.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:18. 1961. Amanda Elomäki o. s. Leppälä, emäntä, 1866-1959", "code": "TK 10:18", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:18. 1961. Amanda Elomäki o.s. Leppälä, emäntä, 1866-1959."}, {"id": 10, "image": "IMG20260612101635.jpg", "fi": "Kun Tilda Annila oli kansakoulutyttö Sääksmäen Annilassa, uskottiin voitavan kipuja j.m.s. parantaa noitumalla. Tildan toisen käden sormet ja kämmenen selkä oli täynnä ruuppia. Hänet pantiin menemään erään Huittulan kylässä olevan muijan tykö. Tämä osasi noitua. Tyttö meni ja puhui asiansa. ”Niin kyllä,” sanoi muija, ”muttei ny parane. Ei kuu o ny silälai. Tu toisen kerran!” Ja muija sanoi päivän. Tyttö meni toisteen. Akka otti villalankaa ja solmieli pätkiä ruuppien yläpuolella ja mutisi jotain. Sitten hän antoi langan pätkät tytölle ja sanoi: ”Hautaa ne ny tonne navetan taka sontaläjään. Mutta älä mennessäs katto takas.” Hoidettava teki ninkun käskettiin. Lähti sitten pois ja sanoi, ettei hän edes huomannut, milloin ruupat kädestään parani. (Sillälailla ruupat paraneekin. Niin huomaamatta ne multakin lapsena meni eikä niitä edes noiduttukaan)", "en": "When Tilda Annila was an elementary-school girl at Annila in Sääksmäki, people believed that pains and the like could be cured by witchcraft. The fingers of Tilda’s one hand and the back of her hand were full of scabs. She was sent to a woman in the village of Huittula. This woman knew how to bewitch. The girl went and explained her matter. ‘Yes, indeed,’ said the woman, ‘but it will not heal now. The moon is not right now. Come another time!’ The woman named the day. The girl went again. The old woman took wool yarn and tied pieces above the scabs and muttered something. Then she gave the pieces of yarn to the girl and said: ‘Now bury these back there behind the cowshed in the manure heap. But don’t look back as you go.’ The patient did as she was told. Then she went away and said that she did not even notice when the scabs on her hand healed. (That is how scabs do heal – so unnoticed that mine too disappeared in childhood without even being bewitched.)", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:29. 1961. Tilda Seppälä o. s. Annila, kuollut", "code": "TK 10:29", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:29. 1961. Tilda Seppälä o.s. Annila, kuollut."}, {"id": 11, "image": "IMG20260612101649.jpg", "fi": "Kahren talon tontut keskusteli. Toinen sano: ”Minä poltan taloni, poltaks sinä?” Toinen vastas: ”E minä polta. Mutta mitäs sinä sitte talos poltat?” ”Jaa, ei meillä peitetä koskaan valkeen silmiä. Nin minä näytän niille.” (Ei siunattu, kun tehtiin tuli) ”Mutta älä sitä meirän tuaksun taarua polta siältä teirän tiirun taarun korvasta.”\n\n(Oli lainattu jauhosihti ja pantu saavin korvaan eikä oltu palautettu omistajataloon.)", "en": "The household spirits of two houses were talking. One said: ‘I am going to burn my house. Will you burn yours?’ The other answered: ‘I will not burn mine. But why are you going to burn your house?’ ‘Well, in our house the eyes of the fire are never covered. So I will show them.’ (No blessing was made when the fire was lit.) ‘But do not burn our tuaksun taaru from the ear of your tiirun taaru.’\n\nA flour sieve had been borrowed and placed on the rim of a tub, and it had not been returned to the owner’s house.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:26. 1961. Amanda Elomäki o. s. Leppälä, emäntä, 1866-1959", "code": "TK 10:26", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:26. 1961. Amanda Elomäki o.s. Leppälä, emäntä, 1866-1959."}, {"id": 12, "image": "IMG20260612101652.jpg", "fi": "Hämeessä oli kylällä yhteinen paimen, jolle syksyllä maksettiin palkka jyvinä. Evään hän sai kesällä vuorotellen karjanomistajilta. Kitsaimmat talot jättivät joskus paimenen jyvät antamatta. Niin oli käynyt Akaan Kurisjärvelläkin. Menivät sitten Pyhäinpäivänä Kurisjärven ”haltiat” hevosilla kirkkoon ja paimen istui tien vieressä kivellä ja huuteli: ”Kosto tulee! Kosto tulee!” Yks isäntä kylästyneenä huusi: ”No, mistä se ny tulee?” ”Jos ei muusta, nin Mettinkylän paimenen palkasta.” vastas paimen. Ei kurisjärveläisillä ollutkaan kirkossa rauhaa. Kun päästiin kotio, nin lähetettiin paimenelle, mitä hälle kuulu.", "en": "In Häme, a village had a common herdsman, whose wages were paid in grain in the autumn. In the summer he received his food in turn from the owners of the cattle. The stingiest houses sometimes failed to give the herdsman his grain. This had happened at Kurisjärvi in Akaa as well. Then on All Saints’ Day the ‘spirits’ of Kurisjärvi went to church by horse, and the herdsman sat on a stone by the road and called out: ‘Revenge is coming! Revenge is coming!’ One master, annoyed, shouted: ‘Well, where is it coming from now?’ ‘If from nothing else, then from the wages of the herdsman of Mettinkylä,’ answered the herdsman. The people of Kurisjärvi had no peace in church after that. When they got home, they sent the herdsman what was due to him.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:27. 1961. Heikki Elomäki, pienvilj. s. 1870", "code": "TK 10:27", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:27. 1961. Heikki Elomäki, pienvilj. s. 1870."}, {"id": 13, "image": "IMG20260612101716.jpg", "fi": "Joku vähä plikka oli saanu ihoonsa mailuvia ja ne syhy. Koitettiin kaikki kotokeinot, mutta plikan iso vaan paheni. Ei ollu lääkäriä viälä Toijalassa. Mutta oli parantaja, jo vanha muija. Hajettiin se. Sillä oli krouvia suoloja tuokkosessa. Muija vei plikan maakiven päälle ja siinä sualolla pyhkieli niitä mauluvia. Sitten se kokos sualat ja heitti ne tuuleen. Plikka parani.", "en": "A little girl had got skin marks, and they itched. All home remedies were tried, but the girl’s rash only worsened. There was not yet a doctor in Toijala. But there was a healer, already an old woman. She was fetched. She had coarse salts in a birch-bark dish. The woman took the girl onto a boulder and there rubbed the marks with the salt. Then she gathered up the salts and threw them into the wind. The girl recovered.", "place": "Sääksmäki, Tyrisevä", "source": "Linda Elomäki TK 10:28. 1961. Amanda Elomäki o. s. Leppälä, emäntä, 1866-1959", "code": "TK 10:28", "date": "1961", "informant": "", "meta": "Sääksmäki, Tyrisevä. Linda Elomäki TK 10:28. 1961. Amanda Elomäki o.s. Leppälä, emäntä, 1866-1959."}, {"id": 14, "image": "IMG20260612101929.jpg", "fi": "Hauhon kirkon lähellä on suuri kivi jonka jättiläiset on heittänyt Sotjalan kylästä Hiiden kalliolta mutta ei jaksanut sinne saakka vaan putosi lähelle kirkkoa Tuuloksen p. vievän tien viereen jossa nuori tyttö oli pellavia kitkemässä ja jäi kiven alle, josta se on saanut nimensä Neitsyt kivi.", "en": "Near Hauho church there is a large stone which giants threw from the Hiiden rock in the village of Sotjala, but they could not throw it all the way there and it fell near the church beside the road leading to Tuulos parish. A young girl was pulling flax in the field there and was trapped under the stone, from which it got its name, Maiden Stone.", "place": "Sääksmäki", "source": "Hiukkanen, Tilda 4. 1938 < Amanda Estlin, s. 1856", "code": "", "date": "1938", "informant": "", "meta": "Sääksmäki. Hiukkanen, Tilda 4. 1938 < Amanda Estlin, s. 1856."}, {"id": 15, "image": "IMG20260612102024.jpg", "fi": "Linnaisten kalliolla on vuoren alakilla lähde. Pieni reikä sinne laelta johtaa. jos rahaa panet, parantaa vesi taudistasi.", "en": "On Linnaisten rock, on the lower slope of the hill, there is a spring. A small hole leads there from the top. If you put money in, the water cures you of your illness.", "place": "Sääksmäki", "source": "HAKS. Kirsti Aulanko 7690. 1939. < Sirkka Lehtonen, s. 1918", "code": "HAKS. Kirsti Aulanko 7690", "date": "1939", "informant": "", "meta": "Sääksmäki. HAKS. Kirsti Aulanko 7690. 1939. < Sirkka Lehtonen, s. 1918."}];
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nPHtupE8J0hC1LSRm1iXJQ2Y049FMkTh0NYwgnDcy2oTiLpxv/exec';
+
 (function () {
   "use strict";
 
-  var STORAGE_KEY = "saaksmaki_review_v1";
-  var state = {
-    query: "",
-    activeFilter: "all",
-    sort: "id",
-    status: loadStatus()
-  };
+  var RECORDS = [];
+  var state = { query: "", activeFilter: "all", sort: "id" };
 
-  function loadStatus() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
+  function showLoading(msg) {
+    var el = document.getElementById('loadingMsg');
+    if (el) { el.textContent = msg || 'Loading...'; el.style.display = 'block'; el.style.color = '#3A4358'; }
+    document.getElementById('cardList').style.opacity = '0.4';
+  }
+  function hideLoading() {
+    var el = document.getElementById('loadingMsg');
+    if (el) el.style.display = 'none';
+    document.getElementById('cardList').style.opacity = '1';
+  }
+  function showError(msg) {
+    var el = document.getElementById('loadingMsg');
+    if (el) { el.textContent = 'Could not load data: ' + msg; el.style.display = 'block'; el.style.color = '#9E2335'; }
   }
 
-  function saveStatus() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.status));
-    } catch (e) { /* ignore */ }
+  function loadFromSheets() {
+    showLoading('Loading cards from Google Sheets...');
+    fetch(SHEETS_URL)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.ok) throw new Error(data.error || 'Server error');
+        RECORDS = data.records.map(function(r) {
+          return {
+            id:          Number(r.id          || r.ID           || 0),
+            image:       r.image              || r['Image file']          || '',
+            fi:          r.fi                 || r['Finnish text']        || '',
+            en:          r.en                 || r['English translation'] || '',
+            place:       r.place              || r.Place                  || '',
+            source:      r.source             || r['Collector / source']  || '',
+            code:        r.code               || r['TK code']             || '',
+            date:        String(r.date        || r.Year                   || ''),
+            informant:   r.informant          || r.Informant              || '',
+            status:      r.status             || r.Status                 || 'unreviewed',
+            note:        r.note               || r.Note                   || '',
+            reviewed_by: r.reviewed_by        || r['Reviewed by']         || '',
+            reviewed_at: r.reviewed_at        || r['Reviewed at']         || ''
+          };
+        });
+        hideLoading();
+        renderChips();
+        renderCards();
+        updateProgress();
+      })
+      .catch(function(err) { showError(err.message); });
+  }
+
+  function saveToSheets(id, patch) {
+    var rec = RECORDS.find(function(r) { return r.id === id; });
+    if (!rec) return;
+    Object.assign(rec, patch);
+    renderChips();
+    renderCards();
+    updateProgress();
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(Object.assign({ id: id }, patch, { reviewed_at: new Date().toISOString() }))
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { if (!d.ok) console.warn('Sheets write error:', d.error); })
+    .catch(function(e) { console.warn('POST failed:', e); });
   }
 
   function getStatus(id) {
-    return state.status[id] || { checked: false, flagged: false, note: "" };
+    var rec = RECORDS.find(function(r) { return r.id === id; });
+    if (!rec) return { checked: false, flagged: false, note: '' };
+    return { checked: rec.status === 'checked', flagged: rec.status === 'flagged', note: rec.note || '' };
   }
 
-  function setStatus(id, patch) {
-    var cur = getStatus(id);
-    state.status[id] = Object.assign({}, cur, patch);
-    saveStatus();
-  }
-
-  // ---------- derive filter chips from data ----------
   function buildChips() {
     var chips = [{ key: "all", label: "All cards", count: RECORDS.length }];
-
-    var unreviewedCount = RECORDS.filter(function (r) { return !getStatus(r.id).checked && !getStatus(r.id).flagged; }).length;
-    var checkedCount = RECORDS.filter(function (r) { return getStatus(r.id).checked; }).length;
-    var flaggedCount = RECORDS.filter(function (r) { return getStatus(r.id).flagged; }).length;
-
-    chips.push({ key: "unreviewed", label: "Unreviewed", count: unreviewedCount });
-    chips.push({ key: "checked", label: "✓ Checked", count: checkedCount });
-    chips.push({ key: "flagged", label: "⚑ Flagged", count: flaggedCount });
-
+    chips.push({ key: "unreviewed", label: "Unreviewed", count: RECORDS.filter(function(r){ return !r.status || r.status === 'unreviewed'; }).length });
+    chips.push({ key: "checked",    label: "Checked",    count: RECORDS.filter(function(r){ return r.status === 'checked'; }).length });
+    chips.push({ key: "flagged",    label: "Flagged",    count: RECORDS.filter(function(r){ return r.status === 'flagged'; }).length });
     return chips;
   }
 
   function renderChips() {
     var row = document.getElementById("chipRow");
+    if (!row) return;
     row.innerHTML = "";
-    buildChips().forEach(function (chip) {
+    buildChips().forEach(function(chip) {
       var btn = document.createElement("button");
       btn.className = "chip" + (state.activeFilter === chip.key ? " active" : "");
-      btn.innerHTML = chip.label + ' <span class="count">' + chip.count + "</span>";
-      btn.addEventListener("click", function () {
+      btn.innerHTML = chip.label + ' <span class="n">' + chip.count + "</span>";
+      btn.addEventListener("click", function() {
         state.activeFilter = (state.activeFilter === chip.key) ? "all" : chip.key;
-        renderChips();
-        renderCards();
+        renderChips(); renderCards();
       });
       row.appendChild(btn);
     });
   }
 
-  // ---------- filtering / searching ----------
   function matchesFilter(r) {
     var f = state.activeFilter;
     if (f === "all") return true;
-    if (f === "unreviewed") { var s = getStatus(r.id); return !s.checked && !s.flagged; }
-    if (f === "checked") return getStatus(r.id).checked;
-    if (f === "flagged") return getStatus(r.id).flagged;
-    if (f.indexOf("place:") === 0) return (r.place || "Unspecified") === f.slice(6);
-    return true;
+    if (f === "unreviewed") return !r.status || r.status === 'unreviewed';
+    return r.status === f;
   }
 
   function matchesQuery(r, q) {
     if (!q) return true;
-    q = q.toLowerCase();
-    var hay = [r.fi, r.en, r.place, r.source, r.code, r.date, r.informant, r.meta, r.image]
-      .join(" ").toLowerCase();
-    return hay.indexOf(q) !== -1;
+    return [r.fi, r.en, r.place, r.source, r.code, r.date, r.informant].join(" ").toLowerCase().indexOf(q.toLowerCase()) !== -1;
   }
 
   function getFiltered() {
-    var list = RECORDS.filter(function (r) {
-      return matchesFilter(r) && matchesQuery(r, state.query);
-    });
+    var list = RECORDS.filter(function(r) { return matchesFilter(r) && matchesQuery(r, state.query); });
     if (state.sort === "code") {
-      list = list.slice().sort(function (a, b) {
-        return (a.code || "").localeCompare(b.code || "", undefined, { numeric: true });
-      });
+      list = list.slice().sort(function(a,b){ return (a.code||"").localeCompare(b.code||"", undefined, {numeric:true}); });
     } else {
-      list = list.slice().sort(function (a, b) { return a.id - b.id; });
+      list = list.slice().sort(function(a,b){ return a.id - b.id; });
     }
     return list;
   }
 
-  // ---------- rendering ----------
   function escapeHtml(str) {
-    return String(str || "").replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    return String(str || "").replace(/[&<>"']/g, function(c) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
     });
   }
 
@@ -354,17 +376,9 @@ const RECORDS = [{"id": 1, "image": "IMG20260612101458.jpg", "fi": "Ylöjärvell
     var escaped = escapeHtml(text);
     if (!q) return escaped;
     try {
-      var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+      var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + ")", "ig");
       return escaped.replace(re, "<mark>$1</mark>");
-    } catch (e) {
-      return escaped;
-    }
-  }
-
-  function cardStatusClass(s) {
-    if (s.flagged) return "status-flagged";
-    if (s.checked) return "status-checked";
-    return "";
+    } catch(e) { return escaped; }
   }
 
   function renderCards() {
@@ -372,24 +386,17 @@ const RECORDS = [{"id": 1, "image": "IMG20260612101458.jpg", "fi": "Ylöjärvell
     var container = document.getElementById("cardList");
     var noResults = document.getElementById("noResults");
     var resultCount = document.getElementById("resultCount");
-
-    resultCount.textContent = "Showing " + list.length + " of " + RECORDS.length;
-
+    if (resultCount) resultCount.textContent = "Showing " + list.length + " of " + RECORDS.length;
     container.innerHTML = "";
-    if (list.length === 0) {
-      noResults.style.display = "block";
-    } else {
-      noResults.style.display = "none";
-    }
+    if (noResults) noResults.style.display = list.length === 0 ? "block" : "none";
 
-    list.forEach(function (r) {
+    list.forEach(function(r) {
       var s = getStatus(r.id);
       var card = document.createElement("article");
-      card.className = "card " + cardStatusClass(s);
+      card.className = "card" + (r.status === 'checked' ? ' status-checked' : r.status === 'flagged' ? ' status-flagged' : '');
       card.id = "card-" + r.id;
-
       var checkedBadge = s.checked ? '<span class="badge badge-ok">&#10003; Checked</span>' : '';
-      var flagBadge = s.flagged ? '<span class="badge badge-flag">&#9873; Flagged</span>' : '';
+      var flagBadge    = s.flagged ? '<span class="badge badge-flag">&#9873; Flagged</span>' : '';
       card.innerHTML =
         '<div class="card-head">' +
           '<span class="card-num">' + r.id + '</span>' +
@@ -399,9 +406,7 @@ const RECORDS = [{"id": 1, "image": "IMG20260612101458.jpg", "fi": "Ylöjärvell
         '</div>' +
         '<div class="card-body">' +
           '<div class="card-img" data-img="images/' + r.image + '" data-cap="' + escapeHtml(r.code || ('Card ' + r.id)) + '">' +
-            '<div class="card-img-inner">' +
-            '<img src="images/' + r.image + '" alt="Scanned card ' + r.id + '" loading="lazy">' +
-            '</div>' +
+            '<div class="card-img-inner"><img src="images/' + r.image + '" alt="Scanned card ' + r.id + '" loading="lazy"></div>' +
             '<span class="zoom-hint">tap to zoom</span>' +
           '</div>' +
           '<div class="card-text">' +
@@ -410,8 +415,8 @@ const RECORDS = [{"id": 1, "image": "IMG20260612101458.jpg", "fi": "Ylöjärvell
             '<div class="field-label en">English translation</div>' +
             '<div class="field-en">' + highlight(r.en, state.query) + '</div>' +
             '<div class="meta-row">' +
-              '<span><b>Place:</b> ' + escapeHtml(r.place || '—') + '</span>' +
-              '<span><b>Source:</b> ' + escapeHtml(r.source || '—') + '</span>' +
+              '<span><b>Place:</b> ' + escapeHtml(r.place || '&mdash;') + '</span>' +
+              '<span><b>Source:</b> ' + escapeHtml(r.source || '&mdash;') + '</span>' +
               (r.informant ? '<span><b>Informant:</b> ' + escapeHtml(r.informant) + '</span>' : '') +
             '</div>' +
             '<div class="actions">' +
@@ -419,159 +424,128 @@ const RECORDS = [{"id": 1, "image": "IMG20260612101458.jpg", "fi": "Ylöjärvell
               '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + (s.flagged ? '&#9873; Flagged' : 'Flag issue') + '</button>' +
               '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + (s.note ? 'Edit note' : '+ add note') + '</button>' +
             '</div>' +
-            '<textarea class="note-box' + (s.note ? ' open' : '') + '" data-id="' + r.id + '" placeholder="e.g. line 3 misread — should be …">' + escapeHtml(s.note) + '</textarea>' +
+            '<textarea class="note-box' + (s.note ? ' open' : '') + '" data-id="' + r.id + '" placeholder="e.g. line 3 misread &mdash; should be ...">' + escapeHtml(s.note) + '</textarea>' +
           '</div>' +
         '</div>';
-
       container.appendChild(card);
     });
-
     attachCardHandlers();
     updateProgress();
   }
 
   function attachCardHandlers() {
-    document.querySelectorAll(".action-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var id = btn.getAttribute("data-id");
+    document.querySelectorAll(".action-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var id     = Number(btn.getAttribute("data-id"));
         var action = btn.getAttribute("data-action");
-        var cur = getStatus(id);
+        var rec    = RECORDS.find(function(r){ return r.id === id; });
+        if (!rec) return;
         if (action === "checked") {
-          var nowChecked = !cur.checked;
-          setStatus(id, { checked: nowChecked, flagged: nowChecked ? false : cur.flagged });
+          saveToSheets(id, { status: rec.status === 'checked' ? 'unreviewed' : 'checked', note: rec.note || '' });
         } else if (action === "flagged") {
-          var nowFlagged = !cur.flagged;
-          setStatus(id, { flagged: nowFlagged, checked: nowFlagged ? false : cur.checked });
+          saveToSheets(id, { status: rec.status === 'flagged' ? 'unreviewed' : 'flagged', note: rec.note || '' });
         }
-        renderChips();
-        renderCards();
       });
     });
 
-    document.querySelectorAll(".note-toggle").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var id = btn.getAttribute("data-id");
+    document.querySelectorAll(".note-toggle").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var id  = btn.getAttribute("data-id");
         var box = document.querySelector('.note-box[data-id="' + id + '"]');
         box.classList.toggle("open");
         if (box.classList.contains("open")) box.focus();
       });
     });
 
-    document.querySelectorAll(".note-box").forEach(function (box) {
-      box.addEventListener("input", function () {
-        var id = box.getAttribute("data-id");
-        setStatus(id, { note: box.value });
+    document.querySelectorAll(".note-box").forEach(function(box) {
+      var timer;
+      box.addEventListener("input", function() {
+        var id  = Number(box.getAttribute("data-id"));
+        var rec = RECORDS.find(function(r){ return r.id === id; });
+        if (!rec) return;
+        rec.note = box.value;
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+          saveToSheets(id, { status: rec.status, note: box.value });
+        }, 1200);
       });
     });
 
-    document.querySelectorAll(".card-img").forEach(function (pane) {
-      pane.addEventListener("click", function () {
+    document.querySelectorAll(".card-img").forEach(function(pane) {
+      pane.addEventListener("click", function() {
         openLightbox(pane.getAttribute("data-img"), pane.getAttribute("data-cap"));
       });
     });
   }
 
   function updateProgress() {
-    var total = RECORDS.length;
-    var checked = RECORDS.filter(function (r) { return getStatus(r.id).checked; }).length;
-    var flagged = RECORDS.filter(function (r) { return getStatus(r.id).flagged; }).length;
+    var total     = RECORDS.length;
+    var checked   = RECORDS.filter(function(r){ return r.status === 'checked'; }).length;
+    var flagged   = RECORDS.filter(function(r){ return r.status === 'flagged'; }).length;
     var remaining = total - checked - flagged;
-
-    document.getElementById("stat-total").textContent = total;
-    document.getElementById("stat-checked").textContent = checked;
-    document.getElementById("stat-flagged").textContent = flagged;
-    document.getElementById("stat-remaining").textContent = remaining;
-
-    document.getElementById("progressLabel").textContent = (checked + flagged) + " / " + total + " reviewed";
-    document.getElementById("fillChecked").style.width = (checked / total * 100) + "%";
-    document.getElementById("fillFlagged").style.width = (flagged / total * 100) + "%";
+    if (document.getElementById("stat-total"))     document.getElementById("stat-total").textContent     = total;
+    if (document.getElementById("stat-checked"))   document.getElementById("stat-checked").textContent   = checked;
+    if (document.getElementById("stat-flagged"))   document.getElementById("stat-flagged").textContent   = flagged;
+    if (document.getElementById("stat-remaining")) document.getElementById("stat-remaining").textContent = remaining;
+    if (document.getElementById("progressLabel"))  document.getElementById("progressLabel").textContent  = (checked + flagged) + " / " + total + " reviewed";
+    if (document.getElementById("fillChecked"))    document.getElementById("fillChecked").style.width    = (total ? checked / total * 100 : 0) + "%";
+    if (document.getElementById("fillFlagged"))    document.getElementById("fillFlagged").style.width    = (total ? flagged / total * 100 : 0) + "%";
   }
 
-  // ---------- lightbox ----------
   function openLightbox(src, caption) {
-    var lb = document.getElementById("lightbox");
     document.getElementById("lightboxImg").src = src;
     document.getElementById("lightboxCaption").textContent = caption;
-    lb.classList.add("open");
+    document.getElementById("lightbox").classList.add("open");
   }
-  function closeLightbox() {
-    document.getElementById("lightbox").classList.remove("open");
-  }
+  document.getElementById("lightboxClose").addEventListener("click", function(){ document.getElementById("lightbox").classList.remove("open"); });
+  document.getElementById("lightbox").addEventListener("click", function(e){ if (e.target.id === "lightbox") document.getElementById("lightbox").classList.remove("open"); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") document.getElementById("lightbox").classList.remove("open"); });
 
-  document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
-  document.getElementById("lightbox").addEventListener("click", function (e) {
-    if (e.target.id === "lightbox") closeLightbox();
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeLightbox();
-  });
-
-  // ---------- search / sort controls ----------
-  document.getElementById("searchInput").addEventListener("input", function (e) {
+  document.getElementById("searchInput").addEventListener("input", function(e) {
     state.query = e.target.value.trim();
     renderCards();
   });
 
-  document.querySelectorAll(".view-toggle button").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      document.querySelectorAll(".view-toggle button").forEach(function (b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      state.sort = btn.getAttribute("data-sort");
-      renderCards();
-    });
-  });
-
-  document.getElementById("resetProgress").addEventListener("click", function () {
-    if (confirm("Clear all checked/flagged marks and notes? This cannot be undone.")) {
-      state.status = {};
-      saveStatus();
-      renderChips();
-      renderCards();
-    }
-  });
-
-
-  // Sidebar sort
   document.querySelectorAll('.sidebar-item[data-sort]').forEach(function(item) {
     item.addEventListener('click', function() {
-      document.querySelectorAll('.sidebar-item[data-sort]').forEach(function(i){i.classList.remove('active');});
+      document.querySelectorAll('.sidebar-item[data-sort]').forEach(function(i){ i.classList.remove('active'); });
       item.classList.add('active');
       state.sort = item.getAttribute('data-sort');
       renderCards();
     });
   });
-  // Sidebar filter
+
   document.querySelectorAll('.sidebar-item[data-filter]').forEach(function(item) {
     item.addEventListener('click', function() {
-      document.querySelectorAll('.sidebar-item[data-filter]').forEach(function(i){i.classList.remove('active-filter');});
+      document.querySelectorAll('.sidebar-item[data-filter]').forEach(function(i){ i.classList.remove('active-filter'); });
       item.classList.add('active-filter');
       state.activeFilter = item.getAttribute('data-filter');
-      renderChips();
-      renderCards();
+      renderChips(); renderCards();
     });
   });
 
-  // ---------- view toggle ----------
-  var mainCol = document.querySelector('.main-col');
   var layoutDiv = document.querySelector('.layout');
-  var cardList = document.getElementById('cardList');
+  var cardListEl = document.getElementById('cardList');
   document.getElementById('btnList').addEventListener('click', function() {
-    cardList.classList.remove('view-grid');
+    cardListEl.classList.remove('view-grid');
     layoutDiv.classList.remove('grid-mode');
     document.getElementById('btnList').classList.add('active');
     document.getElementById('btnGrid').classList.remove('active');
   });
   document.getElementById('btnGrid').addEventListener('click', function() {
-    cardList.classList.add('view-grid');
+    cardListEl.classList.add('view-grid');
     layoutDiv.classList.add('grid-mode');
     document.getElementById('btnGrid').classList.add('active');
     document.getElementById('btnList').classList.remove('active');
   });
-  mainCol.classList.add('view-list');
+  document.querySelector('.main-col').classList.add('view-list');
 
-  // ---------- init ----------
-  renderChips();
-  renderCards();
+  document.getElementById("resetProgress").addEventListener("click", function() {
+    if (confirm("Reload all data from Google Sheets?")) { loadFromSheets(); }
+  });
+
+  loadFromSheets();
+
 })();
 
 </script>
