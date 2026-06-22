@@ -304,7 +304,7 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   }
 
   function getReviewerName() {
-    return (document.getElementById('reviewerName') || {}).value || '';
+    return localStorage.getItem('reviewer_name') || '';
   }
 
   function setSaveIndicator(msg, color) {
@@ -527,7 +527,8 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     if (e.key === 'Enter') document.getElementById('modalConfirm').click();
   });
 
-  // ── Card handlers ────────────────────────────────────────────────
+  // Card handlers
+  function attachCardHandlers() {
     document.querySelectorAll(".action-btn").forEach(function(btn) {
       btn.addEventListener("click", function() {
         var id     = Number(btn.getAttribute("data-id"));
@@ -645,7 +646,5 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
 })();
 
 </script>
-</body>
-</html>
 </body>
 </html>
