@@ -39,7 +39,9 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .title-bar p{font-size:11.5px;color:var(--text-3);margin-top:2px;}
 
 /* TOOLBAR */
-.toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;position:sticky;top:47px;z-index:98;}
+.toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;flex-direction:column;gap:7px;position:sticky;top:47px;z-index:98;}
+.toolbar-row1{display:flex;gap:7px;align-items:center;}
+.toolbar-row2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
 .search-wrap{flex:1;min-width:180px;position:relative;}
 .search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none;}
 #searchInput{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--border);border-radius:7px;font-size:13px;background:var(--surface-2);color:var(--text-1);font-family:var(--sans);outline:none;}
@@ -167,6 +169,25 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 .reviewer-input::placeholder{color:var(--text-3);}
 .reviewer-input:focus{border-color:var(--focus);}
 .save-indicator{font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.35);white-space:nowrap;min-width:60px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(28,27,46,0.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.hidden{display:none;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 28px 24px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.18);}
+.modal-box h2{font-size:16px;font-weight:600;color:var(--text-1);margin:0 0 6px;}
+.modal-box p{font-size:13px;color:var(--text-3);margin:0 0 18px;line-height:1.5;}
+.modal-name-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;font-family:var(--sans);color:var(--text-1);background:var(--surface-2);outline:none;box-sizing:border-box;}
+.modal-name-input:focus{border-color:var(--focus);}
+.modal-btn{margin-top:14px;width:100%;padding:10px;background:var(--focus);color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+.modal-btn:hover{opacity:.9;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(28,27,46,0.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .modal-overlay.hidden{display:none;}
+  .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 28px 24px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.18);}
+  .modal-box h2{font-size:16px;font-weight:600;color:var(--text-1);margin:0 0 6px;}
+  .modal-box p{font-size:13px;color:var(--text-3);margin:0 0 18px;line-height:1.5;}
+  .modal-input{width:100%;padding:10px 12px;box-sizing:border-box;border:1.5px solid var(--border);border-radius:7px;font-size:14px;font-family:var(--sans);color:var(--text-1);background:var(--surface-2);outline:none;margin-bottom:14px;}
+  .modal-input:focus{border-color:var(--focus);}
+  .modal-btn{width:100%;padding:10px;background:var(--focus);color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+  .modal-btn:hover{opacity:.9;}
 </style>
 </head>
 <body>
@@ -183,10 +204,6 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
     <input type="search" id="searchInput" placeholder="Search Finnish, English, places, sources…" autocomplete="off">
   </div>
   <div class="chip-row" id="chipRow"></div>
-  <div class="reviewer-wrap">
-    <span class="reviewer-label">Reviewer:</span>
-    <input class="reviewer-input" id="reviewerName" type="text" placeholder="your name" autocomplete="off">
-  </div>
   <div class="view-toggle">
     <button class="vbtn active" id="btnList" title="List view">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -241,6 +258,15 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
   <button class="lightbox-close" id="lightboxClose">&times;</button>
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<div class="modal-overlay hidden" id="reviewerModal">
+  <div class="modal-box">
+    <h2>Who is reviewing?</h2>
+    <p>Enter your name before marking cards. It will be saved to the shared Google Sheet so others can see who reviewed each card.</p>
+    <input class="modal-input" id="modalNameInput" type="text" placeholder="Your name" autocomplete="off">
+    <button class="modal-btn" id="modalConfirm">Start reviewing</button>
+  </div>
 </div>
 
 <div class="progress-bar">
@@ -470,18 +496,51 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     updateProgress();
   }
 
-  function attachCardHandlers() {
+  // ── Reviewer modal ──────────────────────────────────────────────
+  var pendingAction = null;
+
+  function requireReviewer(callback) {
+    var name = getReviewerName();
+    if (name.trim()) {
+      callback();
+    } else {
+      window._pendingAction = callback;
+      document.getElementById('reviewerModal').classList.remove('hidden');
+      document.getElementById('modalNameInput').focus();
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('reviewerModal').classList.add('hidden');
+  }
+
+  document.getElementById('modalConfirm').addEventListener('click', function() {
+    var name = document.getElementById('modalNameInput').value.trim();
+    if (!name) return;
+    document.getElementById('reviewerName').value = name;
+    localStorage.setItem('reviewer_name', name);
+    closeModal();
+    if (window._pendingAction) { window._pendingAction(); window._pendingAction = null; }
+  });
+
+  document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('modalConfirm').click();
+  });
+
+  // ── Card handlers ────────────────────────────────────────────────
     document.querySelectorAll(".action-btn").forEach(function(btn) {
       btn.addEventListener("click", function() {
         var id     = Number(btn.getAttribute("data-id"));
         var action = btn.getAttribute("data-action");
-        var rec    = RECORDS.find(function(r){ return r.id === id; });
-        if (!rec) return;
-        if (action === "checked") {
-          saveToSheets(id, { status: rec.status === 'checked' ? 'unreviewed' : 'checked', note: rec.note || '' });
-        } else if (action === "flagged") {
-          saveToSheets(id, { status: rec.status === 'flagged' ? 'unreviewed' : 'flagged', note: rec.note || '' });
-        }
+        requireReviewer(function() {
+          var rec = RECORDS.find(function(r){ return r.id === id; });
+          if (!rec) return;
+          if (action === "checked") {
+            saveToSheets(id, { status: rec.status === 'checked' ? 'unreviewed' : 'checked', note: rec.note || '' });
+          } else if (action === "flagged") {
+            saveToSheets(id, { status: rec.status === 'flagged' ? 'unreviewed' : 'flagged', note: rec.note || '' });
+          }
+        });
       });
     });
 
@@ -580,15 +639,6 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   document.getElementById("resetProgress").addEventListener("click", function() {
     loadFromSheets();
   });
-
-  // Persist reviewer name across sessions
-  var reviewerInput = document.getElementById('reviewerName');
-  if (reviewerInput) {
-    reviewerInput.value = localStorage.getItem('reviewer_name') || '';
-    reviewerInput.addEventListener('input', function() {
-      localStorage.setItem('reviewer_name', reviewerInput.value);
-    });
-  }
 
   loadFromSheets();
 
