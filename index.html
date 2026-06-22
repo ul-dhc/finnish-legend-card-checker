@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKS Finnish Folk Legend Index Card Checker</title>
+<title>Finnish Folk Legend Index Card Checker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -193,6 +193,8 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
   .modal-input:focus{border-color:var(--focus);}
   .modal-btn{width:100%;padding:10px;background:var(--focus);color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);}
   .modal-btn:hover{opacity:.9;}
+.reviewed-by{margin-top:8px;font-size:11px;color:var(--text-3);font-family:var(--mono);}
+.reviewed-by b{color:var(--text-2);font-weight:500;}
 </style>
 </head>
 <body>
@@ -461,6 +463,15 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     return list;
   }
 
+  function formatDate(isoStr) {
+    if (!isoStr) return '';
+    try {
+      var d = new Date(isoStr);
+      return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+             ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    } catch(e) { return isoStr; }
+  }
+
   function escapeHtml(str) {
     return String(str || "").replace(/[&<>"']/g, function(c) {
       return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
@@ -519,6 +530,10 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
               '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + (s.flagged ? '&#9873; Flagged' : 'Flag issue') + '</button>' +
               '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + (s.note ? 'Edit note' : '+ add note') + '</button>' +
             '</div>' +
+            (r.reviewed_by || r.reviewed_at ? '<div class="reviewed-by">' +
+              (r.reviewed_by ? 'Reviewed by <b>' + escapeHtml(r.reviewed_by) + '</b>' : 'Reviewed') +
+              (r.reviewed_at ? ' &middot; ' + formatDate(r.reviewed_at) : '') +
+            '</div>' : '') +
             '<textarea class="note-box' + (s.note ? ' open' : '') + '" data-id="' + r.id + '" placeholder="e.g. line 3 misread &mdash; should be ...">' + escapeHtml(s.note) + '</textarea>' +
           '</div>' +
         '</div>';
