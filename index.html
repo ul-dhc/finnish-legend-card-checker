@@ -200,17 +200,10 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 <div class="top-rule"></div>
 
 <div class="title-bar">
-  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
     <h1>SKS Finnish Folk Legend Index Card Checker</h1>
-    <div id="reviewerDisplay" style="font-size:12px;color:var(--text-3);white-space:nowrap;display:none;">
-      Reviewer: <b id="reviewerNameDisplay" style="color:var(--text-2);"></b>
-      <button onclick="
-        localStorage.removeItem('reviewer_name');
-        document.getElementById('reviewerDisplay').style.display='none';
-        document.getElementById('modalNameInput').value='';
-        document.getElementById('reviewerModal').classList.remove('hidden');
-        document.getElementById('modalNameInput').focus();
-      " style="background:none;border:none;color:var(--focus);font-size:12px;cursor:pointer;padding:0 0 0 6px;text-decoration:underline;font-family:var(--sans);">change</button>
+    <div id="reviewerDisplay" style="font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:4px;">
+      Reviewer: <span id="reviewerNameDisplay"></span>
     </div>
   </div>
 </div>
@@ -334,13 +327,12 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     var name = localStorage.getItem('reviewer_name') || '';
     var display = document.getElementById('reviewerDisplay');
     var nameEl  = document.getElementById('reviewerNameDisplay');
-    if (display && nameEl) {
-      if (name) {
-        nameEl.textContent = name;
-        display.style.display = 'block';
-      } else {
-        display.style.display = 'none';
-      }
+    if (!display || !nameEl) return;
+    display.style.display = 'flex';
+    if (name) {
+      nameEl.innerHTML = '<b style="color:var(--text-1);">' + name + '</b> &nbsp;<button onclick="localStorage.removeItem(\'reviewer_name\');updateReviewerDisplay();document.getElementById(\'modalNameInput\').value=\'\';document.getElementById(\'reviewerModal\').classList.remove(\'hidden\');document.getElementById(\'modalNameInput\').focus();" style="background:none;border:none;color:var(--focus);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;font-family:var(--sans);">change</button>';
+    } else {
+      nameEl.innerHTML = '<span style="color:var(--text-3);font-style:italic;">not set</span> &nbsp;<button onclick="document.getElementById(\'modalNameInput\').value=\'\';document.getElementById(\'reviewerModal\').classList.remove(\'hidden\');document.getElementById(\'modalNameInput\').focus();" style="background:none;border:none;color:var(--focus);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;font-family:var(--sans);">set name</button>';
     }
   }
 
