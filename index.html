@@ -581,9 +581,13 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
           var rec = RECORDS.find(function(r){ return r.id === id; });
           if (!rec) return;
           if (action === "checked") {
-            saveToSheets(id, { status: rec.status === 'checked' ? 'unreviewed' : 'checked', note: rec.note || '' });
+            var ns = rec.status === 'checked' ? 'unreviewed' : 'checked';
+            if (ns === 'unreviewed') { rec.reviewed_by = ''; rec.reviewed_at = ''; }
+            saveToSheets(id, { status: ns, note: rec.note || '', reviewed_by: ns === 'unreviewed' ? '' : getReviewerName(), reviewed_at: ns === 'unreviewed' ? '' : new Date().toISOString() });
           } else if (action === "flagged") {
-            saveToSheets(id, { status: rec.status === 'flagged' ? 'unreviewed' : 'flagged', note: rec.note || '' });
+            var ns = rec.status === 'flagged' ? 'unreviewed' : 'flagged';
+            if (ns === 'unreviewed') { rec.reviewed_by = ''; rec.reviewed_at = ''; }
+            saveToSheets(id, { status: ns, note: rec.note || '', reviewed_by: ns === 'unreviewed' ? '' : getReviewerName(), reviewed_at: ns === 'unreviewed' ? '' : new Date().toISOString() });
           }
         });
       });
