@@ -39,7 +39,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .title-bar p{font-size:11.5px;color:var(--text-3);margin-top:2px;}
 
 /* TOOLBAR */
-.toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;flex-direction:column;gap:7px;position:sticky;top:47px;z-index:98;}
+.toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;flex-direction:row;align-items:center;gap:8px;position:sticky;top:47px;z-index:98;}
 .toolbar-row1{display:flex;gap:7px;align-items:center;}
 .toolbar-row2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
 .search-wrap{flex:1;min-width:180px;position:relative;}
@@ -71,7 +71,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 @media(max-width:760px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
 
 /* SIDEBAR */
-.sidebar{border-right:1px solid var(--border);background:var(--surface);padding:14px 0;position:sticky;top:115px;align-self:start;max-height:calc(100vh - 140px);overflow-y:auto;}
+.sidebar{border-right:1px solid var(--border);background:var(--surface);padding:14px 0;position:sticky;top:90px;align-self:start;max-height:calc(100vh - 100px);overflow-y:auto;}
 .sidebar-sec{padding:0 10px 12px;}
 .sidebar-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;font-weight:500;margin-bottom:5px;padding:0 6px;}
 .sidebar-item{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:6px;cursor:pointer;color:var(--text-2);font-size:12px;user-select:none;}
@@ -213,7 +213,6 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="search" id="searchInput" placeholder="Search Finnish, English, places, sources…" autocomplete="off">
   </div>
-  <div class="chip-row" id="chipRow"></div>
   <div class="view-toggle">
     <button class="vbtn active" id="btnList" title="List view">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
