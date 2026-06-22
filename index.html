@@ -108,7 +108,12 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .badge-flag{background:var(--flag-light);color:var(--flag);}
 .card-head-meta{margin-left:auto;font-size:11px;color:var(--text-3);white-space:nowrap;}
 .card-body{display:flex;flex-direction:row;}
-  @media(max-width:600px){.card-img{width:100px;}}
+@media(max-width:600px){
+  .card-body{flex-direction:column-reverse;}
+  .card-img{width:100% !important;border-right:none;border-top:1px solid var(--border);}
+  .card-img-inner{padding:10px;position:static;}
+  .card-img img{max-height:160px;width:auto;margin:0 auto;display:block;}
+}
 .card-img{
     width:140px;
     flex:none;
@@ -195,7 +200,19 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 <div class="top-rule"></div>
 
 <div class="title-bar">
-  <h1>SKS Finnish Folk Legend Index Card Checker</h1>
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+    <h1>SKS Finnish Folk Legend Index Card Checker</h1>
+    <div id="reviewerDisplay" style="font-size:12px;color:var(--text-3);white-space:nowrap;display:none;">
+      Reviewer: <b id="reviewerNameDisplay" style="color:var(--text-2);"></b>
+      <button onclick="
+        localStorage.removeItem('reviewer_name');
+        document.getElementById('reviewerDisplay').style.display='none';
+        document.getElementById('modalNameInput').value='';
+        document.getElementById('reviewerModal').classList.remove('hidden');
+        document.getElementById('modalNameInput').focus();
+      " style="background:none;border:none;color:var(--focus);font-size:12px;cursor:pointer;padding:0 0 0 6px;text-decoration:underline;font-family:var(--sans);">change</button>
+    </div>
+  </div>
 </div>
 
 <div class="toolbar">
@@ -273,6 +290,7 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
       if(!n)return;
       localStorage.setItem('reviewer_name',n);
       document.getElementById('reviewerModal').classList.add('hidden');
+      updateReviewerDisplay();
       if(window._pendingAction){window._pendingAction();window._pendingAction=null;}
     ">Start reviewing</button>
   </div>
@@ -310,6 +328,20 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   function showError(msg) {
     var el = document.getElementById('loadingMsg');
     if (el) { el.textContent = 'Could not load data: ' + msg; el.style.display = 'block'; el.style.color = '#9E2335'; }
+  }
+
+  function updateReviewerDisplay() {
+    var name = localStorage.getItem('reviewer_name') || '';
+    var display = document.getElementById('reviewerDisplay');
+    var nameEl  = document.getElementById('reviewerNameDisplay');
+    if (display && nameEl) {
+      if (name) {
+        nameEl.textContent = name;
+        display.style.display = 'block';
+      } else {
+        display.style.display = 'none';
+      }
+    }
   }
 
   function getReviewerName() {
@@ -647,6 +679,18 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     loadFromSheets();
   });
 
+  document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var n = document.getElementById('modalNameInput').value.trim();
+      if (!n) return;
+      localStorage.setItem('reviewer_name', n);
+      document.getElementById('reviewerModal').classList.add('hidden');
+      updateReviewerDisplay();
+      if (window._pendingAction) { window._pendingAction(); window._pendingAction = null; }
+    }
+  });
+
+  updateReviewerDisplay();
   loadFromSheets();
 
 })();
