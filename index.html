@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finnish Folk Legend Index Card Checker</title>
+<!-- no change to title -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -478,7 +479,7 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   }
 
   function highlight(text, q) {
-    var escaped = escapeHtml(text);
+    var escaped = escapeHtml(text).replace(/\n{2,}/g, '\n');
     if (!q) return escaped;
     try {
       var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + ")", "ig");
