@@ -161,6 +161,12 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 .fill-flag{background:#D4707F;height:100%;}
 .reset-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-size:10px;padding:4px 9px;border-radius:5px;cursor:pointer;font-family:var(--mono);white-space:nowrap;}
 .reset-btn:hover{background:rgba(255,255,255,.14);}
+.reviewer-wrap{display:flex;align-items:center;gap:6px;flex:none;}
+.reviewer-label{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--mono);white-space:nowrap;}
+.reviewer-input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:4px 8px;border-radius:5px;font-family:var(--mono);width:130px;outline:none;}
+.reviewer-input::placeholder{color:rgba(255,255,255,.3);}
+.reviewer-input:focus{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.12);}
+.save-indicator{font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.35);white-space:nowrap;min-width:60px;}
 </style>
 </head>
 <body>
@@ -234,12 +240,17 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 </div>
 
 <div class="progress-bar">
+  <div class="reviewer-wrap">
+    <span class="reviewer-label">Reviewer:</span>
+    <input class="reviewer-input" id="reviewerName" type="text" placeholder="your name" autocomplete="off">
+  </div>
   <span class="progress-lbl" id="progressLabel">0 / 15 reviewed</span>
   <div class="progress-track">
     <div class="fill-ok" id="fillChecked" style="width:0%"></div>
     <div class="fill-flag" id="fillFlagged" style="width:0%"></div>
   </div>
-  <button class="reset-btn" id="resetProgress">reset review marks</button>
+  <span class="save-indicator" id="saveIndicator"></span>
+  <button class="reset-btn" id="resetProgress">reload</button>
 </div>
 
 <script>
@@ -264,6 +275,17 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   function showError(msg) {
     var el = document.getElementById('loadingMsg');
     if (el) { el.textContent = 'Could not load data: ' + msg; el.style.display = 'block'; el.style.color = '#9E2335'; }
+  }
+
+  function getReviewerName() {
+    return (document.getElementById('reviewerName') || {}).value || '';
+  }
+
+  function setSaveIndicator(msg, color) {
+    var el = document.getElementById('saveIndicator');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = color || 'rgba(255,255,255,.35)';
   }
 
   function loadFromSheets() {
@@ -304,14 +326,29 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
     renderChips();
     renderCards();
     updateProgress();
+
+    setSaveIndicator('saving...', 'rgba(255,255,255,.5)');
+
+    var payload = JSON.stringify(Object.assign({ id: id }, patch, {
+      reviewed_by: getReviewerName(),
+      reviewed_at: new Date().toISOString()
+    }));
+
+    // Use no-cors as fallback — Apps Script accepts plain text POST
     fetch(SHEETS_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(Object.assign({ id: id }, patch, { reviewed_at: new Date().toISOString() }))
+      body: payload
     })
-    .then(function(r) { return r.json(); })
-    .then(function(d) { if (!d.ok) console.warn('Sheets write error:', d.error); })
-    .catch(function(e) { console.warn('POST failed:', e); });
+    .then(function() {
+      setSaveIndicator('saved', 'rgba(191,227,218,.8)');
+      setTimeout(function(){ setSaveIndicator(''); }, 2000);
+    })
+    .catch(function(e) {
+      setSaveIndicator('save failed', 'rgba(216,112,127,.9)');
+      console.warn('POST failed:', e);
+    });
   }
 
   function getStatus(id) {
@@ -541,8 +578,17 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
   document.querySelector('.main-col').classList.add('view-list');
 
   document.getElementById("resetProgress").addEventListener("click", function() {
-    if (confirm("Reload all data from Google Sheets?")) { loadFromSheets(); }
+    loadFromSheets();
   });
+
+  // Persist reviewer name across sessions
+  var reviewerInput = document.getElementById('reviewerName');
+  if (reviewerInput) {
+    reviewerInput.value = localStorage.getItem('reviewer_name') || '';
+    reviewerInput.addEventListener('input', function() {
+      localStorage.setItem('reviewer_name', reviewerInput.value);
+    });
+  }
 
   loadFromSheets();
 
