@@ -81,7 +81,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .sidebar-divider{height:1px;background:var(--divider);margin:4px 10px 8px;}
 
 /* MAIN */
-.main-col{padding:16px;display:flex;flex-direction:column;gap:28px;background:var(--app-bg);min-width:0;}
+.main-col{padding:16px;display:flex;flex-direction:column;gap:20px;background:var(--app-bg);min-width:0;}
   .main-col.view-list .card{max-width:900px;}
   #cardList.view-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start;}
   @media(max-width:900px){#cardList.view-grid{grid-template-columns:1fr;}}
@@ -98,7 +98,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .view-toggle{display:flex;gap:2px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:3px;flex:none;}
   .vbtn{background:transparent;border:none;padding:5px 8px;border-radius:5px;cursor:pointer;color:var(--text-3);display:flex;align-items:center;justify-content:center;}
   .vbtn.active{background:var(--surface);color:var(--text-1);box-shadow:0 1px 3px rgba(0,0,0,.1);}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;border-left:3px solid transparent;box-shadow:0 4px 16px rgba(28,27,46,0.13);}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;border-left:3px solid transparent;box-shadow:0 2px 8px rgba(28,27,46,0.08);}
 .card.status-checked{border-left-color:var(--ok);}
 .card.status-flagged{border-left-color:var(--flag);}
 .card-head{background:var(--surface-2);border-bottom:1px solid var(--border-soft);padding:8px 12px;display:flex;align-items:center;gap:7px;}
@@ -135,8 +135,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
   }
   .card-img img{width:100%;height:auto;display:block;border-radius:3px;max-height:220px;object-fit:contain;}
 .card-img .zoom-hint{position:absolute;bottom:6px;right:6px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);font-size:10px;padding:3px 7px;border-radius:12px;font-family:var(--mono);pointer-events:none;}
-.card-text{padding:12px 12px 14px;min-width:0;}
-.card::after{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--border) 0%,var(--border-soft) 100%);}
+.card-text{padding:12px;min-width:0;}
 .field-label{font-size:10px;color:var(--focus);text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:4px;}
 .field-label.en{color:#5B5A86;}
 .field-fi{background:var(--surface-2);border:1px solid var(--border-soft);border-radius:6px;padding:9px 11px;font-size:13px;color:var(--text-1);line-height:1.55;margin-bottom:10px;white-space:pre-line;}
@@ -148,9 +147,18 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .action-btn:hover{border-color:var(--text-2);}
 .action-btn.active-ok{background:var(--ok-light);border-color:var(--ok);color:var(--ok);}
 .action-btn.active-flag{background:var(--flag-light);border-color:var(--flag);color:var(--flag);}
-.note-toggle{font-size:11.5px;color:var(--text-3);background:none;border:none;cursor:pointer;text-decoration:underline;padding:6px 4px;font-family:var(--sans);}
-.note-box{width:100%;margin-top:8px;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:var(--sans);font-size:12.5px;resize:vertical;min-height:56px;background:var(--surface-2);display:none;color:var(--text-1);}
-.note-box.open{display:block;}
+
+/* NOTE TOGGLE BUTTON */
+.note-toggle{font-size:11.5px;color:#C95C2A;background:none;border:none;cursor:pointer;padding:6px 4px;font-family:var(--sans);display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
+.note-toggle:hover{color:#A04420;}
+
+/* NOTE WRAPPER — orange tinted, browser-proof */
+.note-wrapper{display:none;margin-top:10px;border-radius:7px;border:1.5px solid #E07A40;border-left:4px solid #C95C2A;background:#FEF0E6;padding:10px 12px;}
+.note-wrapper.open{display:block;}
+.note-wrapper-label{font-size:10px;color:#C95C2A;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.note-box{width:100%;border:none;border-radius:4px;padding:0;font-family:var(--sans);font-size:12.5px;resize:vertical;min-height:56px;background:transparent;color:#2A1200;outline:none;}
+.note-box::placeholder{color:#C47A5A;}
+
 mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 
 .no-results{text-align:center;padding:48px 20px;color:var(--text-3);font-size:14px;}
@@ -304,6 +312,11 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 
 <script>
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nPHtupE8J0hC1LSRm1iXJQ2Y049FMkTh0NYwgnDcy2oTiLpxv/exec';
+
+// SVG icons used in action buttons
+var ICON_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex:none"><polyline points="20 6 9 17 4 12"/></svg>';
+var ICON_FLAG  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
+var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
 
 (function () {
   "use strict";
@@ -527,15 +540,18 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
               (r.informant ? '<span><b>Informant:</b> ' + escapeHtml(r.informant) + '</span>' : '') +
             '</div>' +
             '<div class="actions">' +
-              '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + (s.checked ? '&#10003; Checked' : 'Mark checked') + '</button>' +
-              '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + (s.flagged ? '&#9873; Flagged' : 'Flag issue') + '</button>' +
-              '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + (s.note ? 'Edit note' : '+ add note') + '</button>' +
+              '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + ICON_CHECK + (s.checked ? 'Checked' : 'Mark checked') + '</button>' +
+              '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + ICON_FLAG + (s.flagged ? 'Flagged' : 'Flag issue') + '</button>' +
+              '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + ICON_NOTE + (s.note ? 'Edit note' : 'Add note') + '</button>' +
             '</div>' +
             (( r.status === 'checked' || r.status === 'flagged') && (r.reviewed_by || r.reviewed_at) ? '<div class="reviewed-by">' +
               (r.reviewed_by ? 'Reviewed by <b>' + escapeHtml(r.reviewed_by) + '</b>' : 'Reviewed') +
               (r.reviewed_at ? ' &middot; ' + formatDate(r.reviewed_at) : '') +
             '</div>' : '') +
-            '<textarea class="note-box' + (s.note ? ' open' : '') + '" data-id="' + r.id + '" placeholder="e.g. line 3 misread &mdash; should be ...">' + escapeHtml(s.note) + '</textarea>' +
+            '<div class="note-wrapper' + (s.note ? ' open' : '') + '" data-id="' + r.id + '">' +
+              '<div class="note-wrapper-label">' + ICON_NOTE + 'Reviewer note</div>' +
+              '<textarea class="note-box" data-id="' + r.id + '" placeholder="e.g. line 3 misread &mdash; should be ...">' + escapeHtml(s.note) + '</textarea>' +
+            '</div>' +
           '</div>' +
         '</div>';
       container.appendChild(card);
@@ -590,10 +606,10 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nP
 
     document.querySelectorAll(".note-toggle").forEach(function(btn) {
       btn.addEventListener("click", function() {
-        var id  = btn.getAttribute("data-id");
-        var box = document.querySelector('.note-box[data-id="' + id + '"]');
-        box.classList.toggle("open");
-        if (box.classList.contains("open")) box.focus();
+        var id      = btn.getAttribute("data-id");
+        var wrapper = document.querySelector('.note-wrapper[data-id="' + id + '"]');
+        wrapper.classList.toggle("open");
+        if (wrapper.classList.contains("open")) wrapper.querySelector('.note-box').focus();
       });
     });
 
