@@ -260,7 +260,7 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
       <div class="sidebar-label">Filter</div>
       <div class="sidebar-item active-filter" data-filter="all">All cards <span style="margin-left:auto;opacity:.5;font-size:11px;">15</span></div>
       <div class="sidebar-item" data-filter="unreviewed">Unreviewed</div>
-      <div class="sidebar-item" data-filter="checked">✓ Checked</div>
+      <div class="sidebar-item" data-filter="checked">✓ Approved</div>
       <div class="sidebar-item" data-filter="flagged">⚑ Flagged</div>
     </div>
   </div>
@@ -515,7 +515,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
       var card = document.createElement("article");
       card.className = "card" + (r.status === 'checked' ? ' status-checked' : r.status === 'flagged' ? ' status-flagged' : '');
       card.id = "card-" + r.id;
-      var checkedBadge = s.checked ? '<span class="badge badge-ok">&#10003; Checked</span>' : '';
+      var checkedBadge = s.checked ? '<span class="badge badge-ok">&#10003; Approved</span>' : '';
       var flagBadge    = s.flagged ? '<span class="badge badge-flag">&#9873; Flagged</span>' : '';
       card.innerHTML =
         '<div class="card-head">' +
@@ -540,9 +540,9 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
               (r.informant ? '<span><b>Informant:</b> ' + escapeHtml(r.informant) + '</span>' : '') +
             '</div>' +
             '<div class="actions">' +
-              '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + ICON_CHECK + (s.checked ? 'Checked' : 'Mark checked') + '</button>' +
-              '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + ICON_FLAG + (s.flagged ? 'Flagged' : 'Flag issue') + '</button>' +
-              '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + ICON_NOTE + (s.note ? 'Edit note' : 'Add note') + '</button>' +
+              '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + ICON_CHECK + (s.checked ? 'Approved' : 'Approve') + '</button>' +
+              '<button class="action-btn' + (s.flagged ? ' active-flag' : '') + '" data-action="flagged" data-id="' + r.id + '">' + ICON_FLAG + (s.flagged ? 'Flagged' : 'Flag') + '</button>' +
+              '<button class="note-toggle" data-action="note" data-id="' + r.id + '">' + ICON_NOTE + (s.note ? 'Edit comment' : 'Add comment') + '</button>' +
             '</div>' +
             (( r.status === 'checked' || r.status === 'flagged') && (r.reviewed_by || r.reviewed_at) ? '<div class="reviewed-by">' +
               (r.reviewed_by ? 'Reviewed by <b>' + escapeHtml(r.reviewed_by) + '</b>' : 'Reviewed') +
