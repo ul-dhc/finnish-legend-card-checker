@@ -102,8 +102,10 @@
       <h2>Who is reviewing?</h2>
       <button id="reviewerModalClose" type="button" style="background:none;border:none;font-size:20px;color:var(--text-3);cursor:pointer;line-height:1;padding:0 0 0 12px;">&times;</button>
     </div>
-    <p>Enter your name before marking cards. It will be saved to the shared Google Sheet so others can see who reviewed each card.</p>
+    <p>Enter your name and the shared editor password before marking cards. Your name will be saved to the shared Google Sheet.</p>
     <input class="modal-input" id="modalNameInput" type="text" placeholder="Your name" autocomplete="off">
+    <input class="modal-input" id="modalPasswordInput" type="password" placeholder="Editor password" autocomplete="current-password">
+    <div id="reviewerModalError" role="alert" style="display:none;color:var(--flag);font-size:12px;margin-top:7px;"></div>
     <button class="modal-btn" id="reviewerModalSubmit" type="button">Start reviewing</button>
   </div>
 </div>

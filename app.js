@@ -90,23 +90,57 @@ function refreshIcons() {
 
   function openReviewerModal(clearInput) {
     var input = document.getElementById('modalNameInput');
-    if (clearInput) input.value = '';
+    var passwordInput = document.getElementById('modalPasswordInput');
+    if (clearInput) {
+      input.value = '';
+      sessionStorage.removeItem('editor_password');
+    } else if (!input.value) {
+      input.value = getReviewerName();
+    }
+    passwordInput.value = '';
+    document.getElementById('reviewerModalError').style.display = 'none';
     document.getElementById('reviewerModal').classList.remove('hidden');
     input.focus();
   }
 
   function submitReviewerName() {
     var input = document.getElementById('modalNameInput');
+    var passwordInput = document.getElementById('modalPasswordInput');
+    var error = document.getElementById('reviewerModalError');
+    var submit = document.getElementById('reviewerModalSubmit');
     var name = input.value.trim();
-    if (!name) return;
-    localStorage.setItem('reviewer_name', name);
-    document.getElementById('reviewerModal').classList.add('hidden');
-    updateReviewerDisplay();
-    if (window._pendingAction) {
-      var action = window._pendingAction;
-      window._pendingAction = null;
-      action();
+    var password = passwordInput.value;
+    if (!name || !password) {
+      error.textContent = 'Enter both your name and the editor password.';
+      error.style.display = 'block';
+      return;
     }
+    error.style.display = 'none';
+    submit.disabled = true;
+    submit.textContent = 'Checking…';
+    fetch(SHEETS_URL + '?action=authenticate&password=' + encodeURIComponent(password))
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        if (!data.ok) throw new Error(data.error || 'Incorrect editor password.');
+        localStorage.setItem('reviewer_name', name);
+        sessionStorage.setItem('editor_password', password);
+        document.getElementById('reviewerModal').classList.add('hidden');
+        updateReviewerDisplay();
+        if (window._pendingAction) {
+          var action = window._pendingAction;
+          window._pendingAction = null;
+          action();
+        }
+      })
+      .catch(function(err) {
+        error.textContent = err.message || 'The password could not be checked.';
+        error.style.display = 'block';
+        passwordInput.select();
+      })
+      .finally(function() {
+        submit.disabled = false;
+        submit.textContent = 'Start reviewing';
+      });
   }
 
   function getReviewerName() {
@@ -167,6 +201,7 @@ function refreshIcons() {
     setSaveIndicator('saving...', 'rgba(255,255,255,.5)');
 
     var payload = JSON.stringify(Object.assign({ id: id, dataset: currentDataset }, patch, {
+      password: sessionStorage.getItem('editor_password') || '',
       reviewed_by: getReviewerName(),
       reviewed_at: new Date().toISOString()
     }));
@@ -339,7 +374,8 @@ function refreshIcons() {
 
   function requireReviewer(callback) {
     var name = getReviewerName();
-    if (name.trim()) {
+    var password = sessionStorage.getItem('editor_password') || '';
+    if (name.trim() && password) {
       callback();
     } else {
       window._pendingAction = callback;
@@ -348,6 +384,12 @@ function refreshIcons() {
   }
 
   document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitReviewerName();
+    }
+  });
+  document.getElementById('modalPasswordInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
       submitReviewerName();
@@ -382,10 +424,12 @@ function refreshIcons() {
 
     document.querySelectorAll(".note-toggle").forEach(function(btn) {
       btn.addEventListener("click", function() {
-        var id      = btn.getAttribute("data-id");
-        var wrapper = document.querySelector('.note-wrapper[data-id="' + id + '"]');
-        wrapper.classList.toggle("open");
-        if (wrapper.classList.contains("open")) wrapper.querySelector('.note-box').focus();
+        requireReviewer(function() {
+          var id      = btn.getAttribute("data-id");
+          var wrapper = document.querySelector('.note-wrapper[data-id="' + id + '"]');
+          wrapper.classList.toggle("open");
+          if (wrapper.classList.contains("open")) wrapper.querySelector('.note-box').focus();
+        });
       });
     });
 
