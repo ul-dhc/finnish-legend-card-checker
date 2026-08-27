@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finnish Folk Legend Index Card Checker</title>
 <link rel="stylesheet" href="styles.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 <script src="app.js"></script>
 
 </head>
@@ -24,20 +25,20 @@
 </div>
 
 <div class="toolbar">
-  <select id="datasetSelect" class="dataset-select" aria-label="Dataset">
-    <option value="FL_dataset1">FL_dataset1</option>
-    <option value="FL_dataset2">FL_dataset2</option>
-  </select>
+  <div class="dataset-tabs" role="tablist" aria-label="Dataset">
+    <button class="dataset-tab" type="button" role="tab" data-dataset="FL_dataset1">FL Dataset 1</button>
+    <button class="dataset-tab" type="button" role="tab" data-dataset="FL_dataset2">FL Dataset 2</button>
+  </div>
   <div class="search-wrap">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <i data-lucide="search"></i>
     <input type="search" id="searchInput" placeholder="Search Finnish, English, places, sources…" autocomplete="off">
   </div>
   <div class="view-toggle">
     <button class="vbtn active" id="btnList" title="List view">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <i data-lucide="list"></i>
     </button>
     <button class="vbtn" id="btnGrid" title="Grid view">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <i data-lucide="grid-2x2"></i>
     </button>
   </div>
   <div class="accessibility-tools" aria-label="Accessibility settings">
@@ -45,7 +46,7 @@
       <button class="font-control" type="button" id="fontDown" aria-label="Decrease text size">A−</button>
       <button class="font-control" type="button" id="fontUp" aria-label="Increase text size">A+</button>
     </div>
-    <button class="theme-control" type="button" id="themeToggle" aria-label="Turn on dark mode" title="Light or dark mode">☾</button>
+    <button class="theme-control" type="button" id="themeToggle" aria-label="Turn on dark mode" title="Light or dark mode"><i data-lucide="moon"></i></button>
   </div>
 </div>
 
@@ -61,11 +62,11 @@
     <div class="sidebar-sec">
       <div class="sidebar-label">Sort by</div>
       <div class="sidebar-item active" data-sort="id">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <i data-lucide="list-ordered"></i>
         Card order
       </div>
       <div class="sidebar-item" data-sort="code">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16"/><polyline points="14 2 14 8 20 8"/></svg>
+        <i data-lucide="file-text"></i>
         TK code
       </div>
     </div>

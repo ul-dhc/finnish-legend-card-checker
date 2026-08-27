@@ -1,6 +1,6 @@
 try {
   var savedTheme = localStorage.getItem('checker-theme') || 'light';
-  var savedScale = localStorage.getItem('checker-font-scale') || '1';
+  var savedScale = localStorage.getItem('checker-font-scale') || '1.1';
   document.documentElement.dataset.theme = savedTheme;
   document.documentElement.style.setProperty('--font-scale', savedScale);
 } catch (e) {}
@@ -9,9 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQwu2vDjlbFjiXEO5nPHtupE8J0hC1LSRm1iXJQ2Y049FMkTh0NYwgnDcy2oTiLpxv/exec';
 
 // SVG icons used in action buttons
-var ICON_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex:none"><polyline points="20 6 9 17 4 12"/></svg>';
-var ICON_FLAG  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
-var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+var ICON_CHECK = '<i data-lucide="check"></i>';
+var ICON_FLAG  = '<i data-lucide="flag"></i>';
+var ICON_NOTE  = '<i data-lucide="message-square-text"></i>';
+
+function refreshIcons() {
+  if (window.lucide) window.lucide.createIcons();
+}
 
 (function () {
   "use strict";
@@ -259,6 +263,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     });
     attachCardHandlers();
     updateProgress();
+    refreshIcons();
   }
 
   var pendingAction = null;
@@ -401,16 +406,28 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     loadFromSheets();
   });
 
-  var datasetSelect = document.getElementById('datasetSelect');
-  datasetSelect.value = currentDataset;
-  datasetSelect.addEventListener('change', function(e) {
-    currentDataset = e.target.value;
-    localStorage.setItem('selected_dataset', currentDataset);
-    RECORDS = [];
-    state.query = '';
-    state.activeFilter = 'all';
-    document.getElementById('searchInput').value = '';
-    loadFromSheets();
+  var datasetTabs = document.querySelectorAll('.dataset-tab');
+  function updateDatasetTabs() {
+    datasetTabs.forEach(function(tab) {
+      var active = tab.dataset.dataset === currentDataset;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', String(active));
+      tab.setAttribute('tabindex', active ? '0' : '-1');
+    });
+  }
+  updateDatasetTabs();
+  datasetTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      if (tab.dataset.dataset === currentDataset) return;
+      currentDataset = tab.dataset.dataset;
+      localStorage.setItem('selected_dataset', currentDataset);
+      RECORDS = [];
+      state.query = '';
+      state.activeFilter = 'all';
+      document.getElementById('searchInput').value = '';
+      updateDatasetTabs();
+      loadFromSheets();
+    });
   });
 
   var rootElement = document.documentElement;
@@ -419,15 +436,16 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     rootElement.dataset.theme = theme;
     localStorage.setItem('checker-theme', theme);
     var dark = theme === 'dark';
-    themeToggle.textContent = dark ? '☀' : '☾';
+    themeToggle.innerHTML = '<i data-lucide="' + (dark ? 'sun' : 'moon') + '"></i>';
     themeToggle.setAttribute('aria-label', dark ? 'Turn on light mode' : 'Turn on dark mode');
+    refreshIcons();
   }
   applyTheme(rootElement.dataset.theme || 'light');
   themeToggle.addEventListener('click', function() {
     applyTheme(rootElement.dataset.theme === 'dark' ? 'light' : 'dark');
   });
 
-  var fontScale = Number(localStorage.getItem('checker-font-scale') || 1);
+  var fontScale = Number(localStorage.getItem('checker-font-scale') || 1.1);
   function applyFontScale(value) {
     fontScale = Math.max(0.9, Math.min(1.2, Math.round(value * 10) / 10));
     rootElement.style.setProperty('--font-scale', String(fontScale));
@@ -442,6 +460,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     applyFontScale(fontScale + 0.1);
   });
   applyFontScale(fontScale);
+  refreshIcons();
 
   document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
