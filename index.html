@@ -4,35 +4,69 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finnish Folk Legend Index Card Checker</title>
-<!-- no change to title -->
+<script>
+try {
+  var savedTheme = localStorage.getItem('checker-theme') || 'light';
+  var savedScale = localStorage.getItem('checker-font-scale') || '1';
+  document.documentElement.dataset.theme = savedTheme;
+  document.documentElement.style.setProperty('--font-scale', savedScale);
+} catch (e) {}
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --app-bg:#FCFAF6;
-  --surface:#FFFFFF;
-  --surface-2:#F8F4EE;
-  --border:#E7DED2;
-  --border-soft:#EFE7DD;
-  --divider:#E5DBCF;
-  --text-1:#1C1B2E;
-  --text-2:#3A4358;
-  --text-3:#6E746F;
-  --focus:#304D8A;
-  --focus-tint:rgba(48,77,138,0.08);
-  --ok:#4F6B57;
-  --ok-light:#BFE3DA;
+  --font-scale:1;
+  --ink:#17243a;
+  --muted:#65738a;
+  --blue:#0a4d96;
+  --accent:#5468f2;
+  --interaction:#20bfa9;
+  --line:#d6dfeb;
+  --paper:#fff;
+  --page-surface:#f4f7fb;
+  --raised:#fff;
+  --navy:#07182d;
+  --app-bg:var(--paper);
+  --surface:var(--raised);
+  --surface-2:var(--page-surface);
+  --border:var(--line);
+  --border-soft:color-mix(in srgb,var(--line),transparent 30%);
+  --divider:var(--line);
+  --text-1:var(--ink);
+  --text-2:color-mix(in srgb,var(--ink),var(--muted) 24%);
+  --text-3:var(--muted);
+  --focus:var(--blue);
+  --focus-tint:color-mix(in srgb,var(--blue),transparent 91%);
+  --ok:#168c78;
+  --ok-light:color-mix(in srgb,var(--ok),transparent 82%);
   --flag:#9E2335;
-  --flag-light:#F8D5DC;
-  --night:#1C1B2E;
+  --flag-light:color-mix(in srgb,var(--flag),transparent 84%);
+  --night:var(--navy);
   --img-bg:#3A4358;
   --mono:'Courier New',Courier,monospace;
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 }
+:root[data-theme=dark]{
+  --ink:#eef3fb;
+  --muted:#9aa8bf;
+  --blue:#76aef8;
+  --accent:#8b7cf6;
+  --interaction:#42d6bd;
+  --line:#263754;
+  --paper:#070d1c;
+  --page-surface:#0b172b;
+  --raised:#101d35;
+  --navy:#050916;
+  --ok:#61c3aa;
+  --flag:#e17b8b;
+  --img-bg:#081321;
+  color-scheme:dark;
+}
 html,body{height:100%;background:var(--app-bg);}
-body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smoothing:antialiased;}
+body{font-family:var(--sans);font-size:calc(13px * var(--font-scale));color:var(--text-1);-webkit-font-smoothing:antialiased;transition:background .18s ease,color .18s ease;}
 
 /* TOP RULE */
-.top-rule{height:4px;background:linear-gradient(90deg,#304D8A 0%,#9E2335 50%,#1F396C 100%);position:sticky;top:0;z-index:100;}
+.top-rule{height:4px;background:linear-gradient(90deg,var(--blue) 0%,var(--interaction) 52%,var(--accent) 100%);position:sticky;top:0;z-index:100;}
 
 /* TITLE BAR */
 .title-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px 12px;position:sticky;top:4px;z-index:99;}
@@ -46,6 +80,12 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .search-wrap{flex:1;min-width:180px;position:relative;}
 .dataset-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface-2);color:var(--text-1);font-family:var(--sans);outline:none;cursor:pointer;}
 .dataset-select:focus{border-color:var(--focus);}
+.accessibility-tools{display:flex;align-items:center;gap:6px;flex:none;}
+.font-tools{display:flex;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2);}
+.font-control,.theme-control{min-width:38px;height:34px;border:0;border-radius:999px;background:transparent;color:var(--text-3);font-weight:750;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .18s ease,color .18s ease,box-shadow .18s ease;}
+.font-control:hover,.theme-control:hover{background:var(--surface);color:var(--focus);}
+.font-control:disabled{opacity:.38;cursor:not-allowed;}
+.theme-control{border:1px solid var(--border);background:var(--surface-2);font-size:17px;}
 .search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none;}
 #searchInput{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--border);border-radius:7px;font-size:13px;background:var(--surface-2);color:var(--text-1);font-family:var(--sans);outline:none;}
 #searchInput:focus{border-color:var(--focus);}
@@ -84,7 +124,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 
 /* MAIN */
 .main-col{padding:16px;display:flex;flex-direction:column;gap:20px;background:var(--app-bg);min-width:0;}
-  .main-col.view-list .card{max-width:900px;}
+  .main-col.view-list .card{max-width:1100px;}
   #cardList.view-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start;}
   @media(max-width:900px){#cardList.view-grid{grid-template-columns:1fr;}}
   /* vertical card layout in grid mode */
@@ -104,7 +144,7 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .card.status-checked{border-left-color:var(--ok-light);}
 .card.status-flagged{border-left-color:var(--flag-light);}
 .card-head{background:var(--surface-2);border-bottom:1px solid var(--border-soft);padding:8px 12px;display:flex;align-items:center;gap:7px;}
-.card-num{width:20px;height:20px;background:var(--night);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:600;flex:none;}
+.card-num{min-width:36px;height:22px;padding:0 7px;background:var(--night);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:650;flex:none;}
 .badge{font-size:10px;font-weight:500;padding:3px 8px;border-radius:5px;white-space:nowrap;}
 .badge-blue{background:var(--focus-tint);color:var(--focus);}
 .badge-ok{background:var(--ok-light);color:var(--ok);}
@@ -140,8 +180,9 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .card-text{padding:12px;min-width:0;}
 .field-label{font-size:10px;color:var(--focus);text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:4px;}
 .field-label.en{color:#5B5A86;}
-.field-fi{background:var(--surface-2);border:1px solid var(--border-soft);border-radius:6px;padding:9px 11px;font-size:13px;color:var(--text-1);line-height:1.55;margin-bottom:10px;white-space:pre-line;}
-.field-en{font-size:13px;color:var(--text-2);font-style:italic;line-height:1.55;margin-bottom:10px;white-space:pre-line;}
+.field-label.en{color:var(--accent);}
+.field-fi{background:var(--surface-2);border:1px solid var(--border-soft);border-radius:6px;padding:9px 11px;font-size:calc(13px * var(--font-scale));color:var(--text-1);line-height:1.65;margin-bottom:10px;white-space:pre-line;}
+.field-en{font-size:calc(13px * var(--font-scale));color:var(--text-2);font-style:italic;line-height:1.65;margin-bottom:10px;white-space:pre-line;}
 .meta-row{display:flex;gap:10px 16px;font-size:11px;color:var(--text-3);border-top:1px dashed var(--divider);padding-top:8px;flex-wrap:wrap;}
 .meta-row b{color:var(--text-2);font-weight:500;}
 .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;}
@@ -151,15 +192,15 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .action-btn.active-flag{background:var(--flag-light);border-color:var(--flag);color:var(--flag);}
 
 /* NOTE TOGGLE BUTTON */
-.note-toggle{font-size:11.5px;color:#C95C2A;background:none;border:none;cursor:pointer;padding:6px 4px;font-family:var(--sans);display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
-.note-toggle:hover{color:#A04420;}
+.note-toggle{font-size:11.5px;color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 4px;font-family:var(--sans);display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
+.note-toggle:hover{color:var(--interaction);}
 
 /* NOTE WRAPPER — orange tinted, browser-proof */
-.note-wrapper{display:none;margin-top:10px;border-radius:7px;border:1.5px solid #E07A40;border-left:4px solid #C95C2A;background:#FEF0E6;padding:10px 12px;}
+.note-wrapper{display:none;margin-top:10px;border-radius:7px;border:1.5px solid color-mix(in srgb,var(--blue),transparent 38%);border-left:4px solid var(--blue);background:color-mix(in srgb,var(--blue),transparent 93%);padding:10px 12px;}
 .note-wrapper.open{display:block;}
-.note-wrapper-label{font-size:10px;color:#C95C2A;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
-.note-box{width:100%;border:none;border-radius:4px;padding:0;font-family:var(--sans);font-size:12.5px;resize:vertical;min-height:56px;background:transparent;color:#2A1200;outline:none;}
-.note-box::placeholder{color:#C47A5A;}
+.note-wrapper-label{font-size:10px;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.note-box{width:100%;border:none;border-radius:4px;padding:0;font-family:var(--sans);font-size:12.5px;resize:vertical;min-height:56px;background:transparent;color:var(--text-1);outline:none;}
+.note-box::placeholder{color:var(--text-3);}
 
 mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 
@@ -207,9 +248,22 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
   .modal-btn:hover{opacity:.9;}
 .reviewed-by{margin-top:8px;font-size:11px;color:var(--text-3);font-family:var(--mono);}
 .reviewed-by b{color:var(--text-2);font-weight:500;}
+.skip-link{position:fixed;z-index:500;left:1rem;top:-5rem;background:var(--surface);color:var(--text-1);padding:.7rem 1rem;border:2px solid var(--interaction);border-radius:8px;text-decoration:none;}
+.skip-link:focus{top:1rem;}
+:where(button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid color-mix(in srgb,var(--interaction),transparent 20%);outline-offset:3px;}
+:root[data-theme=dark] .card{box-shadow:0 6px 20px rgba(0,0,0,.22);}
+:root[data-theme=dark] mark{background:rgba(255,216,64,.34);color:var(--text-1);}
+@media(max-width:760px){
+  .toolbar{flex-wrap:wrap;top:47px;}
+  .search-wrap{order:3;flex-basis:100%;}
+  .accessibility-tools{margin-left:auto;}
+  .dataset-select{max-width:48%;}
+}
 </style>
 </head>
 <body>
+
+<a class="skip-link" href="#cardList">Skip to cards</a>
 
 <div class="top-rule"></div>
 
@@ -239,6 +293,13 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     </button>
   </div>
+  <div class="accessibility-tools" aria-label="Accessibility settings">
+    <div class="font-tools" aria-label="Text size">
+      <button class="font-control" type="button" id="fontDown" aria-label="Decrease text size">A−</button>
+      <button class="font-control" type="button" id="fontUp" aria-label="Increase text size">A+</button>
+    </div>
+    <button class="theme-control" type="button" id="themeToggle" aria-label="Turn on dark mode" title="Light or dark mode">☾</button>
+  </div>
 </div>
 
 <div class="stat-row">
@@ -264,10 +325,10 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
     <div class="sidebar-divider"></div>
     <div class="sidebar-sec">
       <div class="sidebar-label">Filter</div>
-      <div class="sidebar-item active-filter" data-filter="all">All cards <span style="margin-left:auto;opacity:.5;font-size:11px;">0</span></div>
-      <div class="sidebar-item" data-filter="unreviewed">Unreviewed</div>
-      <div class="sidebar-item" data-filter="checked">✓ Approved</div>
-      <div class="sidebar-item" data-filter="flagged">⚑ Flagged</div>
+      <div class="sidebar-item active-filter" data-filter="all">All cards <span data-filter-count="all" style="margin-left:auto;opacity:.5;font-size:11px;">0</span></div>
+      <div class="sidebar-item" data-filter="unreviewed">Unreviewed <span data-filter-count="unreviewed" style="margin-left:auto;opacity:.5;font-size:11px;">0</span></div>
+      <div class="sidebar-item" data-filter="checked">✓ Approved <span data-filter-count="checked" style="margin-left:auto;opacity:.5;font-size:11px;">0</span></div>
+      <div class="sidebar-item" data-filter="flagged">⚑ Flagged <span data-filter-count="flagged" style="margin-left:auto;opacity:.5;font-size:11px;">0</span></div>
     </div>
   </div>
 
@@ -447,6 +508,10 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   }
 
   function renderChips() {
+    buildChips().forEach(function(chip) {
+      var count = document.querySelector('[data-filter-count="' + chip.key + '"]');
+      if (count) count.textContent = chip.count;
+    });
     var row = document.getElementById("chipRow");
     if (!row) return;
     row.innerHTML = "";
@@ -719,6 +784,36 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     document.getElementById('searchInput').value = '';
     loadFromSheets();
   });
+
+  var rootElement = document.documentElement;
+  var themeToggle = document.getElementById('themeToggle');
+  function applyTheme(theme) {
+    rootElement.dataset.theme = theme;
+    localStorage.setItem('checker-theme', theme);
+    var dark = theme === 'dark';
+    themeToggle.textContent = dark ? '☀' : '☾';
+    themeToggle.setAttribute('aria-label', dark ? 'Turn on light mode' : 'Turn on dark mode');
+  }
+  applyTheme(rootElement.dataset.theme || 'light');
+  themeToggle.addEventListener('click', function() {
+    applyTheme(rootElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
+
+  var fontScale = Number(localStorage.getItem('checker-font-scale') || 1);
+  function applyFontScale(value) {
+    fontScale = Math.max(0.9, Math.min(1.2, Math.round(value * 10) / 10));
+    rootElement.style.setProperty('--font-scale', String(fontScale));
+    localStorage.setItem('checker-font-scale', String(fontScale));
+    document.getElementById('fontDown').disabled = fontScale <= 0.9;
+    document.getElementById('fontUp').disabled = fontScale >= 1.2;
+  }
+  document.getElementById('fontDown').addEventListener('click', function() {
+    applyFontScale(fontScale - 0.1);
+  });
+  document.getElementById('fontUp').addEventListener('click', function() {
+    applyFontScale(fontScale + 0.1);
+  });
+  applyFontScale(fontScale);
 
   document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
