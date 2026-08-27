@@ -235,7 +235,6 @@ function refreshIcons() {
       card.innerHTML =
         '<div class="card-head">' +
           '<span class="card-num">' + r.id + '</span>' +
-          '<span class="archive-ref' + (archiveReference ? '' : ' missing') + '"><i data-lucide="archive"></i><span class="archive-ref-label">Archive reference</span><strong>' + escapeHtml(archiveReference || 'Not recorded') + '</strong></span>' +
           checkedBadge + flagBadge +
           '<span class="card-head-meta">' + escapeHtml(r.place) + (r.date ? ' &middot; ' + escapeHtml(r.date) : '') + '</span>' +
         '</div>' +
@@ -250,9 +249,10 @@ function refreshIcons() {
             '<div class="field-label en">English translation</div>' +
             '<div class="field-en">' + highlight(r.en, state.query) + '</div>' +
             '<div class="meta-row">' +
-              '<span><b>Place:</b> ' + escapeHtml(r.place || '&mdash;') + '</span>' +
-              '<span><b>Source:</b> ' + escapeHtml(r.source || '&mdash;') + '</span>' +
-              (r.informant ? '<span><b>Informant:</b> ' + escapeHtml(r.informant) + '</span>' : '') +
+              '<span class="meta-item"><i data-lucide="map-pin"></i><span><b>Place</b><span class="meta-value">' + escapeHtml(r.place || 'Not recorded') + '</span></span></span>' +
+              '<span class="meta-item meta-source"><i data-lucide="book-open-text"></i><span><b>Source</b><span class="meta-value">' + escapeHtml(r.source || 'Not recorded') + '</span></span></span>' +
+              '<span class="meta-item"><i data-lucide="user-round"></i><span><b>Informant</b><span class="meta-value">' + escapeHtml(r.informant || 'Not recorded') + '</span></span></span>' +
+              '<span class="meta-item meta-archive' + (archiveReference ? '' : ' missing') + '"><i data-lucide="archive"></i><span><b>Archive reference</b><span class="meta-value">' + escapeHtml(archiveReference || 'Not recorded') + '</span></span></span>' +
             '</div>' +
             '<div class="actions">' +
               '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + ICON_CHECK + (s.checked ? 'Approved' : 'Approve') + '</button>' +
@@ -463,11 +463,11 @@ function refreshIcons() {
 
   var fontScale = Number(localStorage.getItem('checker-font-scale') || 1.1);
   function applyFontScale(value) {
-    fontScale = Math.max(0.9, Math.min(1.2, Math.round(value * 10) / 10));
+    fontScale = Math.max(0.9, Math.min(1.6, Math.round(value * 10) / 10));
     rootElement.style.setProperty('--font-scale', String(fontScale));
     localStorage.setItem('checker-font-scale', String(fontScale));
     document.getElementById('fontDown').disabled = fontScale <= 0.9;
-    document.getElementById('fontUp').disabled = fontScale >= 1.2;
+    document.getElementById('fontUp').disabled = fontScale >= 1.6;
   }
   document.getElementById('fontDown').addEventListener('click', function() {
     applyFontScale(fontScale - 0.1);
