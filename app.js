@@ -221,7 +221,7 @@ function refreshIcons() {
       card.id = "card-" + r.id;
       var checkedBadge = s.checked ? '<span class="badge badge-ok">&#10003; Approved</span>' : '';
       var flagBadge    = s.flagged ? '<span class="badge badge-flag">&#9873; Flagged</span>' : '';
-      var imageUrl = 'images/' + encodeURIComponent(r.image || '');
+      var imageUrl = 'images/' + encodeURIComponent((r.image || '').normalize('NFC'));
       card.innerHTML =
         '<div class="card-head">' +
           '<span class="card-num">' + r.id + '</span>' +
