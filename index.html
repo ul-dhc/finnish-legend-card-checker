@@ -100,18 +100,11 @@
   <div class="modal-box">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
       <h2>Who is reviewing?</h2>
-      <button onclick="document.getElementById('reviewerModal').classList.add('hidden');window._pendingAction=null;" style="background:none;border:none;font-size:20px;color:var(--text-3);cursor:pointer;line-height:1;padding:0 0 0 12px;">&times;</button>
+      <button id="reviewerModalClose" type="button" style="background:none;border:none;font-size:20px;color:var(--text-3);cursor:pointer;line-height:1;padding:0 0 0 12px;">&times;</button>
     </div>
     <p>Enter your name before marking cards. It will be saved to the shared Google Sheet so others can see who reviewed each card.</p>
     <input class="modal-input" id="modalNameInput" type="text" placeholder="Your name" autocomplete="off">
-    <button class="modal-btn" onclick="
-      var n=document.getElementById('modalNameInput').value.trim();
-      if(!n)return;
-      localStorage.setItem('reviewer_name',n);
-      document.getElementById('reviewerModal').classList.add('hidden');
-      updateReviewerDisplay();
-      if(window._pendingAction){window._pendingAction();window._pendingAction=null;}
-    ">Start reviewing</button>
+    <button class="modal-btn" id="reviewerModalSubmit" type="button">Start reviewing</button>
   </div>
 </div>
 

@@ -79,9 +79,33 @@ function refreshIcons() {
     if (!display || !nameEl) return;
     display.style.display = 'flex';
     if (name) {
-      nameEl.innerHTML = '<b style="color:var(--text-1);">' + name + '</b> &nbsp;<button onclick="localStorage.removeItem(\'reviewer_name\');updateReviewerDisplay();document.getElementById(\'modalNameInput\').value=\'\';document.getElementById(\'reviewerModal\').classList.remove(\'hidden\');document.getElementById(\'modalNameInput\').focus();" style="background:none;border:none;color:var(--focus);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;font-family:var(--sans);">change</button>';
+      nameEl.innerHTML = '<b style="color:var(--text-1);">' + escapeHtml(name) + '</b> &nbsp;<button id="reviewerChange" type="button" style="background:none;border:none;color:var(--focus);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;font-family:var(--sans);">change</button>';
     } else {
-      nameEl.innerHTML = '<span style="color:var(--text-3);font-style:italic;">not set</span> &nbsp;<button onclick="document.getElementById(\'modalNameInput\').value=\'\';document.getElementById(\'reviewerModal\').classList.remove(\'hidden\');document.getElementById(\'modalNameInput\').focus();" style="background:none;border:none;color:var(--focus);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;font-family:var(--sans);">set name</button>';
+      nameEl.innerHTML = '<span style="color:var(--text-3);font-style:italic;">not set</span> &nbsp;<button id="reviewerChange" type="button" style="background:none;border:none;color:var(--focus);font-size:11px;cursor:pointer;padding:0;text-decoration:underline;font-family:var(--sans);">set name</button>';
+    }
+    document.getElementById('reviewerChange').addEventListener('click', function() {
+      openReviewerModal(true);
+    });
+  }
+
+  function openReviewerModal(clearInput) {
+    var input = document.getElementById('modalNameInput');
+    if (clearInput) input.value = '';
+    document.getElementById('reviewerModal').classList.remove('hidden');
+    input.focus();
+  }
+
+  function submitReviewerName() {
+    var input = document.getElementById('modalNameInput');
+    var name = input.value.trim();
+    if (!name) return;
+    localStorage.setItem('reviewer_name', name);
+    document.getElementById('reviewerModal').classList.add('hidden');
+    updateReviewerDisplay();
+    if (window._pendingAction) {
+      var action = window._pendingAction;
+      window._pendingAction = null;
+      action();
     }
   }
 
@@ -313,27 +337,26 @@ function refreshIcons() {
     refreshIcons();
   }
 
-  var pendingAction = null;
-
   function requireReviewer(callback) {
     var name = getReviewerName();
     if (name.trim()) {
       callback();
     } else {
       window._pendingAction = callback;
-      document.getElementById('reviewerModal').classList.remove('hidden');
-      document.getElementById('modalNameInput').focus();
+      openReviewerModal(false);
     }
   }
 
   document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
-      var n = document.getElementById('modalNameInput').value.trim();
-      if (!n) return;
-      localStorage.setItem('reviewer_name', n);
-      document.getElementById('reviewerModal').classList.add('hidden');
-      if (window._pendingAction) { window._pendingAction(); window._pendingAction = null; }
+      e.preventDefault();
+      submitReviewerName();
     }
+  });
+  document.getElementById('reviewerModalSubmit').addEventListener('click', submitReviewerName);
+  document.getElementById('reviewerModalClose').addEventListener('click', function() {
+    document.getElementById('reviewerModal').classList.add('hidden');
+    window._pendingAction = null;
   });
 
   function attachCardHandlers() {
@@ -514,17 +537,6 @@ function refreshIcons() {
   });
   applyFontScale(fontScale);
   refreshIcons();
-
-  document.getElementById('modalNameInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      var n = document.getElementById('modalNameInput').value.trim();
-      if (!n) return;
-      localStorage.setItem('reviewer_name', n);
-      document.getElementById('reviewerModal').classList.add('hidden');
-      updateReviewerDisplay();
-      if (window._pendingAction) { window._pendingAction(); window._pendingAction = null; }
-    }
-  });
 
   updateReviewerDisplay();
   loadFromSheets();
