@@ -249,10 +249,10 @@ function refreshIcons() {
             '<div class="field-label en">English translation</div>' +
             '<div class="field-en">' + highlight(r.en, state.query) + '</div>' +
             '<div class="meta-row">' +
-              '<span class="meta-item"><i data-lucide="map-pin"></i><span><b>Place</b><span class="meta-value">' + escapeHtml(r.place || 'Not recorded') + '</span></span></span>' +
-              '<span class="meta-item meta-source"><i data-lucide="book-open-text"></i><span><b>Source</b><span class="meta-value">' + escapeHtml(r.source || 'Not recorded') + '</span></span></span>' +
-              '<span class="meta-item"><i data-lucide="user-round"></i><span><b>Informant</b><span class="meta-value">' + escapeHtml(r.informant || 'Not recorded') + '</span></span></span>' +
-              '<span class="meta-item meta-archive' + (archiveReference ? '' : ' missing') + '"><i data-lucide="archive"></i><span><b>Archive reference</b><span class="meta-value">' + escapeHtml(archiveReference || 'Not recorded') + '</span></span></span>' +
+              '<span><b>Place:</b> ' + escapeHtml(r.place || 'Not recorded') + '</span>' +
+              '<span><b>Source:</b> ' + escapeHtml(r.source || 'Not recorded') + '</span>' +
+              '<span><b>Informant:</b> ' + escapeHtml(r.informant || 'Not recorded') + '</span>' +
+              '<span class="meta-archive' + (archiveReference ? '' : ' missing') + '"><b>Archive reference:</b> ' + escapeHtml(archiveReference || 'Not recorded') + '</span>' +
             '</div>' +
             '<div class="actions">' +
               '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + ICON_CHECK + (s.checked ? 'Approved' : 'Approve') + '</button>' +
