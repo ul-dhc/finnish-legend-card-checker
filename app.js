@@ -23,6 +23,39 @@ function refreshIcons() {
   var RECORDS = [];
   var currentDataset = localStorage.getItem('selected_dataset') || 'FL_dataset1';
   var state = { query: "", activeFilter: "all", sort: "id" };
+  var ARCHIVE_REFERENCE_OVERRIDES = { C031: 'a) 8', C039: 'KRK 46:18' };
+
+  function extractArchiveReference(metadata, fallback) {
+    var text = String(metadata || '').replace(/\s+/g, ' ').trim();
+    var match;
+    if (!text) return String(fallback || '').trim();
+
+    match = text.match(/\bHAKS\b(?:(?!\b(?:18|19|20)\d{2}\b).){0,80}?\b(\d{3,6})\b/i);
+    if (match) return 'HAKS ' + match[1];
+
+    match = text.match(/\b(?:Frans\s+Kärki|Tuomela,\s*Arvo|Valve,\s*A\.)\s*[.,]?\s*(\d{1,6})\b/i);
+    if (match) return match[1];
+
+    match = text.match(/\b(TK|KT|KRK|KRA|PK|KFK)\s*[.:]?\s*(\d+)(?:\s*[:.]\s*(\d+))?/i);
+    if (match) {
+      var item = match[3] || '';
+      if (!item) {
+        var tail = text.slice(match.index + match[0].length).split(/\b(?:18|19|20)\d{2}\b|<|\s[-–]\s/, 1)[0];
+        var numbers = tail.match(/\b\d{1,4}\b/g);
+        if (numbers && numbers.length) item = numbers[numbers.length - 1];
+      }
+      return match[1].toUpperCase() + ' ' + match[2] + (item ? ':' + item : '');
+    }
+
+    var yearIndex = text.search(/\b(?:18|19|20)\d{2}\b/);
+    var citation = yearIndex >= 0 ? text.slice(0, yearIndex) : text;
+    var markerPattern = /\b(II\s+)?([ab])\s*\)?\s*(\d+)\b/ig;
+    var marker;
+    while ((match = markerPattern.exec(citation)) !== null) marker = match;
+    if (marker) return (marker[1] ? 'II ' : '') + marker[2].toLowerCase() + ') ' + marker[3];
+
+    return String(fallback || '').trim();
+  }
 
   function showLoading(msg) {
     var el = document.getElementById('loadingMsg');
@@ -70,15 +103,19 @@ function refreshIcons() {
       .then(function(data) {
         if (!data.ok) throw new Error(data.error || 'Server error');
         RECORDS = data.records.map(function(r) {
+          var id = String(r.id || r.ID || '');
+          var storedReference = r.archive_reference || r['Archive reference'] || r.code || r['TK code'] || '';
+          var sourceMetadata = r.source_metadata || r['Source metadata'] || '';
+          var archiveReference = ARCHIVE_REFERENCE_OVERRIDES[id] || extractArchiveReference(sourceMetadata, storedReference);
           return {
-            id:          String(r.id          || r.ID           || ''),
+            id:          id,
             image:       r.image              || r['Image file']          || '',
             fi:          r.fi                 || r['Finnish text']        || '',
             en:          r.en                 || r['English translation'] || '',
             place:       r.place              || r.Place                  || '',
             source:      r.source             || r['Collector / source']  || '',
-            code:        r.code               || r['TK code']             || '',
-            archiveRef:  r.archive_reference  || r['Archive reference']   || r.code || r['TK code'] || '',
+            code:        archiveReference,
+            archiveRef:  archiveReference,
             date:        String(r.date        || r.Year                   || ''),
             informant:   r.informant          || r.Informant              || '',
             status:      r.status             || r.Status                 || 'unreviewed',
