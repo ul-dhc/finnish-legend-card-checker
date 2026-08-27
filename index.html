@@ -44,6 +44,8 @@ body{font-family:var(--sans);font-size:13px;color:var(--text-1);-webkit-font-smo
 .toolbar-row1{display:flex;gap:7px;align-items:center;}
 .toolbar-row2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
 .search-wrap{flex:1;min-width:180px;position:relative;}
+.dataset-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface-2);color:var(--text-1);font-family:var(--sans);outline:none;cursor:pointer;}
+.dataset-select:focus{border-color:var(--focus);}
 .search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none;}
 #searchInput{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--border);border-radius:7px;font-size:13px;background:var(--surface-2);color:var(--text-1);font-family:var(--sans);outline:none;}
 #searchInput:focus{border-color:var(--focus);}
@@ -221,6 +223,10 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 </div>
 
 <div class="toolbar">
+  <select id="datasetSelect" class="dataset-select" aria-label="Dataset">
+    <option value="FL_dataset1">FL_dataset1</option>
+    <option value="FL_dataset2">FL_dataset2</option>
+  </select>
   <div class="search-wrap">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="search" id="searchInput" placeholder="Search Finnish, English, places, sources…" autocomplete="off">
@@ -236,10 +242,10 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 </div>
 
 <div class="stat-row">
-  <div class="stat"><div class="stat-val" id="stat-total">15</div><div class="stat-lbl">Total cards</div></div>
+  <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total cards</div></div>
   <div class="stat ok"><div class="stat-val" id="stat-checked">0</div><div class="stat-lbl">Checked</div></div>
   <div class="stat flag"><div class="stat-val" id="stat-flagged">0</div><div class="stat-lbl">Flagged</div></div>
-  <div class="stat rem"><div class="stat-val" id="stat-remaining">15</div><div class="stat-lbl">Remaining</div></div>
+  <div class="stat rem"><div class="stat-val" id="stat-remaining">0</div><div class="stat-lbl">Remaining</div></div>
 </div>
 
 <div class="layout">
@@ -258,7 +264,7 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
     <div class="sidebar-divider"></div>
     <div class="sidebar-sec">
       <div class="sidebar-label">Filter</div>
-      <div class="sidebar-item active-filter" data-filter="all">All cards <span style="margin-left:auto;opacity:.5;font-size:11px;">15</span></div>
+      <div class="sidebar-item active-filter" data-filter="all">All cards <span style="margin-left:auto;opacity:.5;font-size:11px;">0</span></div>
       <div class="sidebar-item" data-filter="unreviewed">Unreviewed</div>
       <div class="sidebar-item" data-filter="checked">✓ Approved</div>
       <div class="sidebar-item" data-filter="flagged">⚑ Flagged</div>
@@ -267,7 +273,7 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 
   <div class="main-col">
     <div class="result-row">
-      <span id="resultCount">Showing 15 of 15</span>
+      <span id="resultCount">Showing 0 of 0</span>
     </div>
     <div id="loadingMsg" style="display:none;padding:20px;font-size:13px;color:#3A4358;"></div>
     <div id="cardList"></div>
@@ -301,7 +307,7 @@ mark{background:#F3E1A0;color:var(--text-1);border-radius:2px;padding:0 1px;}
 </div>
 
 <div class="progress-bar">
-  <span class="progress-lbl" id="progressLabel">0 / 15 reviewed</span>
+  <span class="progress-lbl" id="progressLabel">0 / 0 reviewed</span>
   <div class="progress-track">
     <div class="fill-ok" id="fillChecked" style="width:0%"></div>
     <div class="fill-flag" id="fillFlagged" style="width:0%"></div>
@@ -322,6 +328,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   "use strict";
 
   var RECORDS = [];
+  var currentDataset = localStorage.getItem('selected_dataset') || 'FL_dataset1';
   var state = { query: "", activeFilter: "all", sort: "id" };
 
   function showLoading(msg) {
@@ -365,13 +372,13 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
 
   function loadFromSheets() {
     showLoading('Loading cards from Google Sheets...');
-    fetch(SHEETS_URL)
+    fetch(SHEETS_URL + '?dataset=' + encodeURIComponent(currentDataset))
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (!data.ok) throw new Error(data.error || 'Server error');
         RECORDS = data.records.map(function(r) {
           return {
-            id:          Number(r.id          || r.ID           || 0),
+            id:          String(r.id          || r.ID           || ''),
             image:       r.image              || r['Image file']          || '',
             fi:          r.fi                 || r['Finnish text']        || '',
             en:          r.en                 || r['English translation'] || '',
@@ -404,7 +411,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
 
     setSaveIndicator('saving...', 'rgba(255,255,255,.5)');
 
-    var payload = JSON.stringify(Object.assign({ id: id }, patch, {
+    var payload = JSON.stringify(Object.assign({ id: id, dataset: currentDataset }, patch, {
       reviewed_by: getReviewerName(),
       reviewed_at: new Date().toISOString()
     }));
@@ -472,7 +479,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     if (state.sort === "code") {
       list = list.slice().sort(function(a,b){ return (a.code||"").localeCompare(b.code||"", undefined, {numeric:true}); });
     } else {
-      list = list.slice().sort(function(a,b){ return a.id - b.id; });
+      list = list.slice().sort(function(a,b){ return a.id.localeCompare(b.id, undefined, {numeric:true}); });
     }
     return list;
   }
@@ -517,6 +524,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
       card.id = "card-" + r.id;
       var checkedBadge = s.checked ? '<span class="badge badge-ok">&#10003; Approved</span>' : '';
       var flagBadge    = s.flagged ? '<span class="badge badge-flag">&#9873; Flagged</span>' : '';
+      var imageUrl = 'images/' + encodeURIComponent(r.image || '');
       card.innerHTML =
         '<div class="card-head">' +
           '<span class="card-num">' + r.id + '</span>' +
@@ -525,8 +533,8 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
           '<span class="card-head-meta">' + escapeHtml(r.place) + (r.date ? ' &middot; ' + escapeHtml(r.date) : '') + '</span>' +
         '</div>' +
         '<div class="card-body">' +
-          '<div class="card-img" data-img="images/' + r.image + '" data-cap="' + escapeHtml(r.code || ('Card ' + r.id)) + '">' +
-            '<div class="card-img-inner"><img src="images/' + r.image + '" alt="Scanned card ' + r.id + '" loading="lazy"></div>' +
+          '<div class="card-img" data-img="' + imageUrl + '" data-cap="' + escapeHtml(r.code || ('Card ' + r.id)) + '">' +
+            '<div class="card-img-inner"><img src="' + imageUrl + '" alt="Scanned card ' + r.id + '" loading="lazy"></div>' +
             '<span class="zoom-hint">tap to zoom</span>' +
           '</div>' +
           '<div class="card-text">' +
@@ -586,7 +594,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   function attachCardHandlers() {
     document.querySelectorAll(".action-btn").forEach(function(btn) {
       btn.addEventListener("click", function() {
-        var id     = Number(btn.getAttribute("data-id"));
+        var id     = btn.getAttribute("data-id");
         var action = btn.getAttribute("data-action");
         requireReviewer(function() {
           var rec = RECORDS.find(function(r){ return r.id === id; });
@@ -616,7 +624,7 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     document.querySelectorAll(".note-box").forEach(function(box) {
       var timer;
       box.addEventListener("input", function() {
-        var id  = Number(box.getAttribute("data-id"));
+        var id  = box.getAttribute("data-id");
         var rec = RECORDS.find(function(r){ return r.id === id; });
         if (!rec) return;
         rec.note = box.value;
@@ -697,6 +705,18 @@ var ICON_NOTE  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   document.querySelector('.main-col').classList.add('view-list');
 
   document.getElementById("resetProgress").addEventListener("click", function() {
+    loadFromSheets();
+  });
+
+  var datasetSelect = document.getElementById('datasetSelect');
+  datasetSelect.value = currentDataset;
+  datasetSelect.addEventListener('change', function(e) {
+    currentDataset = e.target.value;
+    localStorage.setItem('selected_dataset', currentDataset);
+    RECORDS = [];
+    state.query = '';
+    state.activeFilter = 'all';
+    document.getElementById('searchInput').value = '';
     loadFromSheets();
   });
 
