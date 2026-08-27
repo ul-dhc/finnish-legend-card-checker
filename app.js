@@ -289,7 +289,7 @@ function refreshIcons() {
               '<span><b>Place:</b> ' + escapeHtml(r.place || 'Not recorded') + '</span>' +
               '<span><b>Source:</b> ' + escapeHtml(r.source || 'Not recorded') + '</span>' +
               '<span><b>Informant:</b> ' + escapeHtml(r.informant || 'Not recorded') + '</span>' +
-              '<span class="meta-archive' + (archiveReference ? '' : ' missing') + '"><b>Archive reference:</b> ' + escapeHtml(archiveReference || 'Not recorded') + '</span>' +
+              '<span class="meta-archive' + (archiveReference ? '' : ' missing') + '"><b>Archive ID:</b> ' + escapeHtml(archiveReference || 'Not recorded') + '</span>' +
             '</div>' +
             '<div class="actions">' +
               '<button class="action-btn' + (s.checked ? ' active-ok' : '') + '" data-action="checked" data-id="' + r.id + '">' + ICON_CHECK + (s.checked ? 'Approved' : 'Approve') + '</button>' +
