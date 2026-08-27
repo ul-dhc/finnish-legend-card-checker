@@ -51,10 +51,10 @@
 </div>
 
 <div class="stat-row">
-  <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total cards</div></div>
-  <div class="stat ok"><div class="stat-val" id="stat-checked">0</div><div class="stat-lbl">Checked</div></div>
-  <div class="stat flag"><div class="stat-val" id="stat-flagged">0</div><div class="stat-lbl">Flagged</div></div>
-  <div class="stat rem"><div class="stat-val" id="stat-remaining">0</div><div class="stat-lbl">Remaining</div></div>
+  <button class="stat active" type="button" data-stat-filter="all" aria-pressed="true"><i data-lucide="layers-3"></i><span><span class="stat-val" id="stat-total">0</span><span class="stat-lbl">Total cards</span></span></button>
+  <button class="stat ok" type="button" data-stat-filter="checked" aria-pressed="false"><i data-lucide="circle-check-big"></i><span><span class="stat-val" id="stat-checked">0</span><span class="stat-lbl">Checked</span></span></button>
+  <button class="stat flag" type="button" data-stat-filter="flagged" aria-pressed="false"><i data-lucide="flag"></i><span><span class="stat-val" id="stat-flagged">0</span><span class="stat-lbl">Flagged</span></span></button>
+  <button class="stat rem" type="button" data-stat-filter="unreviewed" aria-pressed="false"><i data-lucide="clock-3"></i><span><span class="stat-val" id="stat-remaining">0</span><span class="stat-lbl">Remaining</span></span></button>
 </div>
 
 <div class="layout">

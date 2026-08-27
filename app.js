@@ -78,6 +78,7 @@ function refreshIcons() {
             place:       r.place              || r.Place                  || '',
             source:      r.source             || r['Collector / source']  || '',
             code:        r.code               || r['TK code']             || '',
+            archiveRef:  r.archive_reference  || r['Archive reference']   || r.code || r['TK code'] || '',
             date:        String(r.date        || r.Year                   || ''),
             informant:   r.informant          || r.Informant              || '',
             status:      r.status             || r.Status                 || 'unreviewed',
@@ -143,6 +144,14 @@ function refreshIcons() {
     buildChips().forEach(function(chip) {
       var count = document.querySelector('[data-filter-count="' + chip.key + '"]');
       if (count) count.textContent = chip.count;
+    });
+    document.querySelectorAll('.sidebar-item[data-filter]').forEach(function(item) {
+      item.classList.toggle('active-filter', item.getAttribute('data-filter') === state.activeFilter);
+    });
+    document.querySelectorAll('[data-stat-filter]').forEach(function(item) {
+      var active = item.getAttribute('data-stat-filter') === state.activeFilter;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', String(active));
     });
     var row = document.getElementById("chipRow");
     if (!row) return;
@@ -221,11 +230,12 @@ function refreshIcons() {
       card.id = "card-" + r.id;
       var checkedBadge = s.checked ? '<span class="badge badge-ok">&#10003; Approved</span>' : '';
       var flagBadge    = s.flagged ? '<span class="badge badge-flag">&#9873; Flagged</span>' : '';
+      var archiveReference = r.archiveRef || r.code;
       var imageUrl = 'images/' + encodeURIComponent((r.image || '').normalize('NFC'));
       card.innerHTML =
         '<div class="card-head">' +
           '<span class="card-num">' + r.id + '</span>' +
-          (r.code ? '<span class="badge badge-blue">' + escapeHtml(r.code) + '</span>' : '') +
+          '<span class="archive-ref' + (archiveReference ? '' : ' missing') + '"><i data-lucide="archive"></i><span class="archive-ref-label">Archive reference</span><strong>' + escapeHtml(archiveReference || 'Not recorded') + '</strong></span>' +
           checkedBadge + flagBadge +
           '<span class="card-head-meta">' + escapeHtml(r.place) + (r.date ? ' &middot; ' + escapeHtml(r.date) : '') + '</span>' +
         '</div>' +
@@ -379,10 +389,16 @@ function refreshIcons() {
 
   document.querySelectorAll('.sidebar-item[data-filter]').forEach(function(item) {
     item.addEventListener('click', function() {
-      document.querySelectorAll('.sidebar-item[data-filter]').forEach(function(i){ i.classList.remove('active-filter'); });
-      item.classList.add('active-filter');
       state.activeFilter = item.getAttribute('data-filter');
       renderChips(); renderCards();
+    });
+  });
+
+  document.querySelectorAll('[data-stat-filter]').forEach(function(item) {
+    item.addEventListener('click', function() {
+      state.activeFilter = item.getAttribute('data-stat-filter');
+      renderChips();
+      renderCards();
     });
   });
 
